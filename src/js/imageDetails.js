@@ -3,7 +3,6 @@
 var ImageDetails = (function (JSTACK) {
 	"use strict";
 
-	console.log("INSIDE ImageDetails" + JSON.stringify(JSTACK));
 	/*****************************************************************
 	*************************CONSTRUCTOR******************************
 	*****************************************************************/	
