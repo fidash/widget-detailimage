@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<widget xmlns="http://wirecloud.conwet.fi.upm.es/ns/macdescription/1" vendor="CoNWeT" name="openstack-imagedetails-widget" version="0.0.1">
+  <details>
+    <title>OpenStack Image Details Widget</title>
+    <email>bgrana@conwet.com</email>
+    <image>images/catalogue.png</image>
+    <smartphoneimage>images/catalogueSmartphone.png</smartphoneimage>
+    <description>Shows details from the given openstack image</description>
+    <authors>bgrana</authors>
+  </details>
+  <requirements>
+    <feature name="StyledElements" />
+  </requirements>
+  <wiring>
+    <inputendpoint name="image_details" type="text" label="Image ID" description="Receives image ID and OpenStack service token." friendcode="image_details"/>
+  </wiring>
+  <contents src="index.html" useplatformstyle="true"/>
+  <rendering height="8" width="30"/>
+</widget>
