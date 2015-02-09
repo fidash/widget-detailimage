@@ -10,7 +10,7 @@ describe('Test image details', function () {
 		respServices = getJSONFixture('respServices.json');
 	});
 
-	it('should have called getimagedetail', function () {
+	it('should call getimagedetail when receives a wiring input event', function () {
 
 		var imageId = 'id';
 		var access = respServices.access;
@@ -27,4 +27,6 @@ describe('Test image details', function () {
 
 		expect(JSTACK.Nova.getimagedetail).toHaveBeenCalled();
 	});
+
+	
 });

@@ -107,7 +107,7 @@ var MockMP = {};
         }
 
         this.methodValues = defaultValues;
-    }
+    };
 
     var createMocks = function createMocks() {
         var spy = {};
