@@ -2496,7 +2496,8 @@ JSTACK.Glance = (function(JS, undefined) {
     check = function() {
         if (JS.Keystone !== undefined && JS.Keystone.params.currentstate === JS.Keystone.STATES.AUTHENTICATED) {
             var service = JS.Keystone.getservice("image");
-            params.url = service.endpoints[0][params.endpointType];
+            //params.url = service.endpoints[0][params.endpointType];
+            params.url = "https://cloud.lab.fiware.org/Spain/image/v1";
             return true;
         }
         return false;

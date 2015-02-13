@@ -1,28 +1,44 @@
+/* global ImageDetails */
+
 var UI = (function () {
+	"use strict";
+
 
 	/*****************************************************************
-	****************************VARIABLEs*****************************
+	****************************VARIABLES*****************************
 	*****************************************************************/
 
-	var refreshButton, deleteButton;
+	var refreshButton, deleteButton, borderLayout;
 
 	var deleteImageSuccess, getImageDetailsSuccess, receiveImageId,
-		refresh, onError;
+		refresh, onError, checkImageDetails, deleteImage;
 
 
 	/*****************************************************************
-	*************************CONSTRUCTOR******************************
+	***************************CONSTRUCTOR****************************
 	*****************************************************************/	
 
 	function UI () {
 
-		this.imageDetails = null;
-		refreshButton = new StyledElements.StyledButton();
-		deleteButton = new StyledElements.StyledButton();
+		// Buttons and layout initialization
+		borderLayout = new StyledElements.BorderLayout();
+		refreshButton = new StyledElements.StyledButton({text:'Refresh', 'class': 'pull-right clear'});
+		deleteButton = new StyledElements.StyledButton({text:'Delete', 'class': 'btn-danger pull-right disabled'});
 
+
+		// Set click events
+		refreshButton.addEventListener('click', refresh.bind(this), false);
+		deleteButton.addEventListener('click', this.deleteImage.bind(this), false);
 
 		// Register callback for input endpoint
-		MashupPlatform.wiring.registerCallback(receiveImageId);
+		MashupPlatform.wiring.registerCallback('image_details', receiveImageId.bind(this));
+
+		/* Context */
+		MashupPlatform.widget.context.registerCallback(function (newValues) {
+            if ("heightInPixels" in newValues || "widthInPixels" in newValues) {
+                borderLayout.repaint();
+            }
+        });
 	}
 
 
@@ -33,10 +49,107 @@ var UI = (function () {
 	UI.prototype = {
 		buildDetailView: function buildDetailView (imageData) {
 
+			// Delete previous
+			borderLayout.getNorthContainer().clear();
+			borderLayout.getCenterContainer().clear();
+			borderLayout.getSouthContainer().clear();
+
+
+			// Border layout
+			var centerContainer = borderLayout.getCenterContainer();
+
+
+			// Headers
+			var header = document.createElement('h1'),
+				headerInfo = document.createElement('h2'),
+				headerStatus = document.createElement('h2'),
+				headerSpecs = document.createElement('h2');
+
+			header.textContent = 'Image Details';
+			headerInfo.textContent = 'Info';
+			headerStatus.textContent = 'Status';
+			headerSpecs.textContent = 'Specs';
+
+
+			// Fields
+			var fields = [
+				'ID',
+				'Name',
+				'Status',
+				'Visibility',
+				'Checksum',
+				'Created',
+				'Updated',
+				'Size',
+				'Container format',
+				'Disk format'];
+
+
+			// Data
+			var infoList 	= document.createElement('ul'),
+				statusList 	= document.createElement('ul'),
+				specsList 	= document.createElement('ul');
+
+			infoList.innerHTML = '<li><strong>' + fields[0] + ':</strong> ' + imageData.id + '</li>' +
+								 '<li><strong>' + fields[1] + ':</strong> ' + imageData.name + '</li>';
+
+			statusList.innerHTML = '<li><strong>' + fields[2] + ':</strong> ' + imageData.status + '</li>' +
+								   '<li><strong>' + fields[3] + ':</strong> ' + imageData.visibility + '</li>' +
+								   '<li><strong>' + fields[4] + ':</strong> ' + imageData.checksum + '</li>' +
+								   '<li><strong>' + fields[5] + ':</strong> ' + imageData.created_at + '</li>' +
+								   '<li><strong>' + fields[6] + ':</strong> ' + imageData.updated_at + '</li>';
+
+			specsList.innerHTML = '<li><strong>' + fields[7] + ':</strong> ' + imageData.size + '</li>' +
+								  '<li><strong>' + fields[8] + ':</strong> ' + imageData.container_format + '</li>' +
+								  '<li><strong>' + fields[9] + ':</strong> ' + imageData.disk_format + '</li>';
+
+
+			// Header and footer
+			borderLayout.getNorthContainer().appendChild(header);
+			borderLayout.getSouthContainer().appendChild(refreshButton);
+			borderLayout.getSouthContainer().appendChild(deleteButton);
+
+
+			// Info {id, name}
+			centerContainer.appendChild(headerInfo);
+			centerContainer.appendChild(new StyledElements.Separator());
+			centerContainer.appendChild(infoList);
+
+
+			// Status {status, visibility, checksum, created, updated}
+			centerContainer.appendChild(headerStatus);
+			centerContainer.appendChild(new StyledElements.Separator());
+			centerContainer.appendChild(statusList);
+
+
+			// Specs {size, container_format, disk_format}
+			centerContainer.appendChild(headerSpecs);
+			centerContainer.appendChild(new StyledElements.Separator());
+			centerContainer.appendChild(specsList);
+
+
+			// Insert and repaint
+			borderLayout.insertInto(document.body);
+			borderLayout.repaint();
 		},
 
 		buildDefaultView: function buildDefaultView () {
 
+			var emptyLayout = StyledElements.BorderLayout({'class': 'empty-layout'});
+
+			emptyLayout.repaint();
+
+
+		},
+
+		deleteImage: function deleteImage () {
+		
+			if (!checkImageDetails.call(this)) {
+				MashupPlatform.widget.log('Error: No image received yet.');
+				return;
+			}
+
+			this.imageDetails.deleteImage(deleteImageSuccess, onError);
 		}
 	};
 
@@ -45,15 +158,23 @@ var UI = (function () {
 	***************************PRIVATE********************************
 	*****************************************************************/
 
-	receiveImageId = function receiveImageId (wiringData) {
-		wiringData = JSON.parse(wiringData);
+	checkImageDetails = function checkImageDetails () {
+		
+		if (!this.imageDetails) {
+			return false;
+		}
 
-		JSTACK.Keystone.params.access = wiringData.access;
-		JSTACK.Keystone.params.token = wiringData.access.token.id;
-		JSTACK.Keystone.params.currentstate = 2;
+		return true;
+	};
 
-		this.imageDetails = new ImageDetails(wiringData.id);
-		this.imageDetails.getImageDetails(getImageDetailsSuccess, onError);
+	refresh = function refresh () {
+
+		if (!checkImageDetails.call(this)) {
+			MashupPlatform.widget.log('Error: No image received yet.');
+			return;
+		}
+
+		this.imageDetails.getImageDetails(getImageDetailsSuccess.bind(this), onError);
 	};
 
 
@@ -73,8 +194,19 @@ var UI = (function () {
 	};
 
 	onError = function onError (error) {
-        MashupPlatform.widget.log('Error: ' + JSON.tableringify(error));
+        MashupPlatform.widget.log('Error: ' + JSON.stringify(error));
     };
+
+    receiveImageId = function receiveImageId (wiringData) {
+		wiringData = JSON.parse(wiringData);
+
+		JSTACK.Keystone.params.access = wiringData.access;
+		JSTACK.Keystone.params.token = wiringData.access.token.id;
+		JSTACK.Keystone.params.currentstate = 2;
+
+		this.imageDetails = new ImageDetails(wiringData.id);
+		this.imageDetails.getImageDetails(getImageDetailsSuccess.bind(this), onError);
+	};
 
 
 	return UI;
