@@ -8,30 +8,34 @@ var UI = (function () {
 	****************************VARIABLES*****************************
 	*****************************************************************/
 
-	var refreshButton, deleteButton, borderLayout;
+	var refreshButton, deleteButton, borderLayout, emptyLayout;
 
 	var deleteImageSuccess, getImageDetailsSuccess, receiveImageId,
-		refresh, onError, checkImageDetails, deleteImage;
+		onError, checkImageDetails, deleteImage;
 
 
 	/*****************************************************************
 	***************************CONSTRUCTOR****************************
-	*****************************************************************/	
+	*****************************************************************/  
 
 	function UI () {
 
 		borderLayout = new StyledElements.BorderLayout();
+		borderLayout.insertInto(document.body);
+		
 
 		// Register callback for input endpoint
-		MashupPlatform.wiring.registerCallback('image_details', receiveImageId.bind(this));
+		MashupPlatform.wiring.registerCallback('image_id', receiveImageId.bind(this));
 
 
 		/* Context */
 		MashupPlatform.widget.context.registerCallback(function (newValues) {
-            if ("heightInPixels" in newValues || "widthInPixels" in newValues) {
-                borderLayout.repaint();
-            }
-        });
+			if ("heightInPixels" in newValues || "widthInPixels" in newValues) {
+				borderLayout.repaint();
+			}
+		});
+
+		this.buildDefaultView();
 	}
 
 
@@ -47,16 +51,15 @@ var UI = (function () {
 			borderLayout.getCenterContainer().clear();
 			borderLayout.getSouthContainer().clear();
 
-
 			// Border layout
 			var centerContainer = borderLayout.getCenterContainer();
 
 
 			// Headers
-			var header = document.createElement('h1'),
-				headerInfo = document.createElement('h2'),
-				headerStatus = document.createElement('h2'),
-				headerSpecs = document.createElement('h2');
+			var header = document.createElement('h2'),
+				headerInfo = document.createElement('h3'),
+				headerStatus = document.createElement('h3'),
+				headerSpecs = document.createElement('h3');
 
 			header.textContent = 'Image Details';
 			headerInfo.textContent = 'Info';
@@ -79,9 +82,9 @@ var UI = (function () {
 
 
 			// Data
-			var infoList 	= document.createElement('ul'),
-				statusList 	= document.createElement('ul'),
-				specsList 	= document.createElement('ul');
+			var infoList    = document.createElement('ul'),
+				statusList  = document.createElement('ul'),
+				specsList   = document.createElement('ul');
 
 			var visibility = imageData.is_public ? 'Public' : 'Private';
 
@@ -106,7 +109,7 @@ var UI = (function () {
 			deleteButton = new StyledElements.StyledButton({text:'Delete', 'class': deleteButtonClass});
 			
 
-			refreshButton.addEventListener('click', refresh.bind(this), false);
+			refreshButton.addEventListener('click', this.refresh.bind(this), false);
 			deleteButton.addEventListener('click', this.deleteImage.bind(this), false);
 
 
@@ -135,16 +138,27 @@ var UI = (function () {
 
 
 			// Insert and repaint
-			borderLayout.insertInto(document.body);
 			borderLayout.repaint();
 		},
 
 		buildDefaultView: function buildDefaultView () {
 
-			var emptyLayout = StyledElements.BorderLayout({'class': 'empty-layout'});
+			// Delete previous
+			borderLayout.getNorthContainer().clear();
+			borderLayout.getCenterContainer().clear();
+			borderLayout.getSouthContainer().clear();
 
-			emptyLayout.repaint();
+			// Build
+			var background = document.createElement('div');
+			var message = document.createElement('div');
 
+			background.className = 'empty-layout';
+			message.clasName = 'info';
+			background.appendChild(message);
+			borderLayout.getCenterContainer().appendChild(background);
+						
+			// Insert and repaint
+			borderLayout.repaint();
 
 		},
 
@@ -155,7 +169,17 @@ var UI = (function () {
 				return;
 			}
 
-			this.imageDetails.deleteImage(deleteImageSuccess, onError);
+			this.imageDetails.deleteImage(deleteImageSuccess.bind(this), onError);
+		},
+
+		refresh: function refresh () {
+
+			if (!checkImageDetails.call(this)) {
+				MashupPlatform.widget.log('Error: No image received yet.');
+				return;
+			}
+
+			this.imageDetails.getImageDetails(getImageDetailsSuccess.bind(this), onError);
 		}
 	};
 
@@ -173,16 +197,6 @@ var UI = (function () {
 		return true;
 	};
 
-	refresh = function refresh () {
-
-		if (!checkImageDetails.call(this)) {
-			MashupPlatform.widget.log('Error: No image received yet.');
-			return;
-		}
-
-		this.imageDetails.getImageDetails(getImageDetailsSuccess.bind(this), onError);
-	};
-
 
 	/*****************************************************************
 	***************************HANDLERS*******************************
@@ -194,16 +208,14 @@ var UI = (function () {
 	};
 
 	deleteImageSuccess = function deleteImageSuccess (response) {
-		response = JSON.parse(response);
-		console.log(response);
 		this.buildDefaultView();
 	};
 
 	onError = function onError (error) {
-        MashupPlatform.widget.log('Error: ' + JSON.stringify(error));
-    };
+		MashupPlatform.widget.log('Error: ' + JSON.stringify(error));
+	};
 
-    receiveImageId = function receiveImageId (wiringData) {
+	receiveImageId = function receiveImageId (wiringData) {
 		wiringData = JSON.parse(wiringData);
 
 		JSTACK.Keystone.params.access = wiringData.access;
