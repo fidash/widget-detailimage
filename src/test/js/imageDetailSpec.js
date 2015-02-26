@@ -162,7 +162,7 @@ describe('Test image details', function () {
                 'Checksum: ' + imageData.checksum,
                 'Created: ' + imageData.created_at,
                 'Updated: ' + imageData.updated_at,
-                'Size: ' + imageData.size,
+                'Size: ' + parseFloat(imageData.size/1024/1024/1024).toFixed(2) + "GB",
                 'Container format: ' + imageData.container_format,
                 'Disk format: ' + imageData.disk_format
                 ];
@@ -187,7 +187,7 @@ describe('Test image details', function () {
                 'Checksum: ' + imageData.checksum,
                 'Created: ' + imageData.created_at,
                 'Updated: ' + imageData.updated_at,
-                'Size: ' + imageData.size,
+                'Size: ' + parseFloat(imageData.size/1024/1024/1024).toFixed(2) + "GB",
                 'Container format: ' + imageData.container_format,
                 'Disk format: ' + imageData.disk_format
                 ];
@@ -212,7 +212,7 @@ describe('Test image details', function () {
                 'Checksum: ' + imageData.checksum,
                 'Created: ' + imageData.created_at,
                 'Updated: ' + imageData.updated_at,
-                'Size: ' + imageData.size,
+                'Size: ' + parseFloat(imageData.size/1024/1024/1024).toFixed(2) + "GB",
                 'Container format: ' + imageData.container_format,
                 'Disk format: ' + imageData.disk_format
                 ];

@@ -11,7 +11,7 @@ var UI = (function () {
 	var refreshButton, deleteButton, borderLayout, emptyLayout;
 
 	var deleteImageSuccess, getImageDetailsSuccess, receiveImageId,
-		onError, checkImageDetails, deleteImage;
+		onError, checkImageDetails, deleteImage, getDisplayableSize;
 
 
 	/*****************************************************************
@@ -87,6 +87,7 @@ var UI = (function () {
 				specsList   = document.createElement('ul');
 
 			var visibility = imageData.is_public ? 'Public' : 'Private';
+			var displayableSize = getDisplayableSize(imageData.size);
 
 			infoList.innerHTML = '<li><strong>' + fields[0] + ':</strong> ' + imageData.id + '</li>' +
 								 '<li><strong>' + fields[1] + ':</strong> ' + imageData.name + '</li>';
@@ -97,7 +98,7 @@ var UI = (function () {
 								   '<li><strong>' + fields[5] + ':</strong> ' + imageData.created_at + '</li>' +
 								   '<li><strong>' + fields[6] + ':</strong> ' + imageData.updated_at + '</li>';
 
-			specsList.innerHTML = '<li><strong>' + fields[7] + ':</strong> ' + imageData.size + '</li>' +
+			specsList.innerHTML = '<li><strong>' + fields[7] + ':</strong> ' + displayableSize + '</li>' +
 								  '<li><strong>' + fields[8] + ':</strong> ' + imageData.container_format + '</li>' +
 								  '<li><strong>' + fields[9] + ':</strong> ' + imageData.disk_format + '</li>';
 
@@ -221,6 +222,32 @@ var UI = (function () {
 		}
 
 		return true;
+	};
+
+	getDisplayableSize = function getDisplayableSize (size) {
+		
+		var units = [
+			"B",
+			"KB",
+			"MB",
+			"GB",
+			"TB"
+		];
+		size = parseFloat(size);
+		var displayableSize = size;
+		var unit = 0;
+
+		if (size <= 1024) {
+			return size + units[0];
+		}
+
+		while (parseFloat(displayableSize/1024) > parseFloat(1) && unit < 5) {
+			displayableSize /= 1024;
+			unit += 1;
+		}
+
+		return displayableSize.toFixed(2) + units[unit];
+	
 	};
 
 
