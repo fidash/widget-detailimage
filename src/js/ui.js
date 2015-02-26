@@ -152,9 +152,12 @@ var UI = (function () {
 			var background = document.createElement('div');
 			var message = document.createElement('div');
 
-			background.className = 'empty-layout';
-			message.clasName = 'info';
+			background.className = 'stripes angled-135';
 			background.appendChild(message);
+
+			message.className = 'info';
+			message.textContent = 'No image data received yet.';
+
 			borderLayout.getCenterContainer().appendChild(background);
 						
 			// Insert and repaint
@@ -169,7 +172,7 @@ var UI = (function () {
 				return;
 			}
 
-			this.imageDetails.deleteImage(deleteImageSuccess.bind(this), onError);
+			this.imageDetails.deleteImage(deleteImageSuccess.bind(this), onError.bind(this));
 		},
 
 		refresh: function refresh () {
@@ -179,7 +182,30 @@ var UI = (function () {
 				return;
 			}
 
-			this.imageDetails.getImageDetails(getImageDetailsSuccess.bind(this), onError);
+			this.imageDetails.getImageDetails(getImageDetailsSuccess.bind(this), onError.bind(this));
+		},
+
+		buildErrorView: function buildErrorView (error) {
+			
+			// Delete previous
+			borderLayout.getNorthContainer().clear();
+			borderLayout.getCenterContainer().clear();
+			borderLayout.getSouthContainer().clear();
+
+			// Build
+			var background = document.createElement('div');
+			var message = document.createElement('div');
+
+			background.className = 'stripes angled-135';
+			background.appendChild(message);
+
+			message.className = 'error';
+			message.textContent = 'Error: Server returned the following error: ' + JSON.stringify(error.message);
+
+			borderLayout.getCenterContainer().appendChild(background);
+						
+			// Insert and repaint
+			borderLayout.repaint();
 		}
 	};
 
@@ -212,6 +238,7 @@ var UI = (function () {
 	};
 
 	onError = function onError (error) {
+		this.buildErrorView(error);
 		MashupPlatform.widget.log('Error: ' + JSON.stringify(error));
 	};
 
@@ -223,7 +250,7 @@ var UI = (function () {
 		JSTACK.Keystone.params.currentstate = 2;
 
 		this.imageDetails = new ImageDetails(wiringData.id);
-		this.imageDetails.getImageDetails(getImageDetailsSuccess.bind(this), onError);
+		this.imageDetails.getImageDetails(getImageDetailsSuccess.bind(this), onError.bind(this));
 	};
 
 

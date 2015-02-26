@@ -278,4 +278,22 @@ describe('Test image details', function () {
 		expect(totalHeightPrev).toEqual(totalHeight);
 	});
 
+	it('should build the error view on failure', function () {
+
+		var errorCallback;
+		var imageId = 'id';
+		var buildErrorViewSpy = spyOn(ui, 'buildErrorView').and.callThrough();
+		var message = {
+			'message': '500 Error',
+			'body': 'Stack trace'
+		};
+		
+		receiveWiringEvent(ui, imageId);
+		errorCallback = JSTACK.Nova.getimagelist.calls.mostRecent().args[2];
+		errorCallback(message);
+
+		expect(buildErrorViewSpy).toHaveBeenCalled();
+		expect($('.error')).toContainText('Error: Server returned the following error: "500 Error"');
+	});
+
 });
