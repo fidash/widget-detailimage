@@ -246,7 +246,7 @@ var UI = (function () {
 			unit += 1;
 		}
 
-		return displayableSize.toFixed(2) + units[unit];
+		return displayableSize.toFixed(2) + ' ' + units[unit];
 	
 	};
 
