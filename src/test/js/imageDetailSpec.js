@@ -162,7 +162,7 @@ describe('Test image details', function () {
                 'Checksum: ' + imageData.checksum,
                 'Created: ' + imageData.created_at,
                 'Updated: ' + imageData.updated_at,
-                'Size: ' + parseFloat(imageData.size/1024/1024/1024).toFixed(2) + " GB",
+                'Size: ' + parseFloat(imageData.size/1024/1024/1024).toFixed(2) + " GiB",
                 'Container format: ' + imageData.container_format,
                 'Disk format: ' + imageData.disk_format
                 ];
