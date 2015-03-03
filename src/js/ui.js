@@ -3,15 +3,57 @@
 var UI = (function () {
 	"use strict";
 
+	
+	/*****************************************************************
+	****************************COSNTANTS*****************************
+	*****************************************************************/
+
+	var RED = 'rgb(211, 1, 1)';
+	var GREEN = 'green';
+	var AMBAR = 'rgb(239, 163, 0)';
+
+	var statuses = {
+		'active': {
+			'class': 'glyphicon glyphicon-ok fa-2x fa-inverse',
+			'color': GREEN
+		},
+		'saving': {
+			'class': 'fa fa-floppy-o fa-2x',
+			'color': GREEN
+		},
+
+		'queued': {
+			'class': 'fa fa-spinner fa-pulse fa-2x fa-inverse',
+			'color': AMBAR
+		},
+		'pending_delete': {
+			'class': 'fa fa-trash fa-2x fa-inverse',
+			'color': AMBAR
+		},
+
+		'killed': {
+			'class': 'glyphicon glyphicon-remove fa-2x fa-inverse',
+			'color': RED
+		},
+		'deleted': {
+			'class': 'fa fa-trash fa-2x fa-inverse',
+			'color': RED
+		}
+	};
+
 
 	/*****************************************************************
 	****************************VARIABLES*****************************
 	*****************************************************************/
 
-	var refreshButton, deleteButton, borderLayout, emptyLayout;
-
 	var deleteImageSuccess, getImageDetailsSuccess, receiveImageId,
-		onError, checkImageDetails, deleteImage, getDisplayableSize;
+		onError, checkImageDetails, deleteImage, getDisplayableSize,
+		refreshSuccess;
+
+	var delay = 10000,
+		prevRefresh = false,
+		error = false;
+
 
 
 	/*****************************************************************
@@ -20,9 +62,6 @@ var UI = (function () {
 
 	function UI () {
 
-		borderLayout = new StyledElements.BorderLayout();
-		borderLayout.insertInto(document.body);
-		
 
 		// Register callback for input endpoint
 		MashupPlatform.wiring.registerCallback('image_id', receiveImageId.bind(this));
@@ -31,7 +70,8 @@ var UI = (function () {
 		/* Context */
 		MashupPlatform.widget.context.registerCallback(function (newValues) {
 			if ("heightInPixels" in newValues || "widthInPixels" in newValues) {
-				borderLayout.repaint();
+				$('body').attr('height', newValues.heightInPixels);
+				$('body').attr('width', newValues.widthInPixels);
 			}
 		});
 
@@ -44,126 +84,84 @@ var UI = (function () {
 	*****************************************************************/
 
 	UI.prototype = {
+
+		init: function init () {
+
+			// Init click events
+			$('#refresh-button').click(function () {
+				$('#refresh-button > i').addClass('fa-spin');
+				this.refresh.call(this);
+			}.bind(this));
+			$('#delete-button').click(function () {
+				this.deleteImage.call(this);
+			}.bind(this));
+		},
+
 		buildDetailView: function buildDetailView (imageData) {
-
-			// Delete previous
-			borderLayout.getNorthContainer().clear();
-			borderLayout.getCenterContainer().clear();
-			borderLayout.getSouthContainer().clear();
-
-			// Border layout
-			var centerContainer = borderLayout.getCenterContainer();
-
-
-			// Headers
-			var header = document.createElement('h2'),
-				headerInfo = document.createElement('h3'),
-				headerStatus = document.createElement('h3'),
-				headerSpecs = document.createElement('h3');
-
-			header.textContent = 'Image Details';
-			headerInfo.textContent = 'Info';
-			headerStatus.textContent = 'Status';
-			headerSpecs.textContent = 'Specs';
-
-
-			// Fields
-			var fields = [
-				'ID',
-				'Name',
-				'Status',
-				'Visibility',
-				'Checksum',
-				'Created',
-				'Updated',
-				'Size',
-				'Container format',
-				'Disk format'];
-
-
-			// Data
-			var infoList    = document.createElement('ul'),
-				statusList  = document.createElement('ul'),
-				specsList   = document.createElement('ul');
 
 			var visibility = imageData.is_public ? 'Public' : 'Private';
 			var displayableSize = getDisplayableSize(imageData.size);
+			var statusTooltip = 'Status: ' + imageData.status;
+			var deleteButtonClass;
 
-			infoList.innerHTML = '<li><strong>' + fields[0] + ':</strong> ' + imageData.id + '</li>' +
-								 '<li><strong>' + fields[1] + ':</strong> ' + imageData.name + '</li>';
+			// Hide other views
+			$('#error-view').addClass('hide');
+			$('#default-view').addClass('hide');
+			$('body').removeClass('stripes angled-135');
 
-			statusList.innerHTML = '<li><strong>' + fields[2] + ':</strong> ' + imageData.status + '</li>' +
-								   '<li><strong>' + fields[3] + ':</strong> ' + visibility + '</li>' +
-								   '<li><strong>' + fields[4] + ':</strong> ' + imageData.checksum + '</li>' +
-								   '<li><strong>' + fields[5] + ':</strong> ' + imageData.created_at + '</li>' +
-								   '<li><strong>' + fields[6] + ':</strong> ' + imageData.updated_at + '</li>';
+			// Fields
+			$('#image-name').text(imageData.name);
+			$('#image-name').attr('title', imageData.name);
+			$('#image-id > span').text(imageData.id);
+			$('#image-visibility > span').text(visibility);
+			$('#image-size > span').text(displayableSize);
+			$('#image-checksum > span').text(imageData.checksum)
+				.attr('title', imageData.checksum);
+			$('#image-container-format > span').text(imageData.container_format);
+			$('#image-disk-format > span').text(imageData.disk_format);
+			$('#image-created > span').text(imageData.created_at);
+			$('#image-updated > span').text(imageData.updated_at);
 
-			specsList.innerHTML = '<li><strong>' + fields[7] + ':</strong> ' + displayableSize + '</li>' +
-								  '<li><strong>' + fields[8] + ':</strong> ' + imageData.container_format + '</li>' +
-								  '<li><strong>' + fields[9] + ':</strong> ' + imageData.disk_format + '</li>';
+			// Status
+			$('#image-status > i').removeClass();
+			$('#image-status > i').addClass(statuses[imageData.status].class);
+			$('#image-status').attr('title', statusTooltip).css('background-color', statuses[imageData.status].color);
 
+			$('#image-status').attr('data-original-title', $('#image-status').attr('title'));
+			$('#image-status').attr('title', '');
 
-			// Buttons
-			var deleteButtonClass = imageData.protected ? 'btn-danger pull-right disabled' : 'btn-danger pull-right';
+			$('#image-name').attr('data-original-title', $('#image-name').attr('title'));
+			$('#image-name').attr('title', '');
+
+			$('#image-checksum > span').attr('data-original-title', $('#image-checksum > span').attr('title'));
+			$('#image-checksum > span').attr('title', '');
+
+			// Initialize tooltips
+			$('[data-toggle="tooltip"]').tooltip();
+
+			// Disable delete button if protected
+			if (imageData.protected) {
+				$('#delete-button').attr('disabled', 'disabled');
+			}
+			else {
+				$('#delete-button').removeAttr('disabled');
+			}			
+
+			// Build
+			$('#detail-view').removeClass('hide');			
 			
-			refreshButton = new StyledElements.StyledButton({text:'Refresh', 'class': 'pull-right clear'});
-			deleteButton = new StyledElements.StyledButton({text:'Delete', 'class': deleteButtonClass});
-			
-
-			refreshButton.addEventListener('click', this.refresh.bind(this), false);
-			deleteButton.addEventListener('click', this.deleteImage.bind(this), false);
-
-
-			// Header and footer
-			borderLayout.getNorthContainer().appendChild(header);
-			borderLayout.getSouthContainer().appendChild(refreshButton);
-			borderLayout.getSouthContainer().appendChild(deleteButton);
-
-
-			// Info {id, name}
-			centerContainer.appendChild(headerInfo);
-			centerContainer.appendChild(new StyledElements.Separator());
-			centerContainer.appendChild(infoList);
-
-
-			// Status {status, visibility, checksum, created, updated}
-			centerContainer.appendChild(headerStatus);
-			centerContainer.appendChild(new StyledElements.Separator());
-			centerContainer.appendChild(statusList);
-
-
-			// Specs {size, container_format, disk_format}
-			centerContainer.appendChild(headerSpecs);
-			centerContainer.appendChild(new StyledElements.Separator());
-			centerContainer.appendChild(specsList);
-
-
-			// Insert and repaint
-			borderLayout.repaint();
 		},
 
 		buildDefaultView: function buildDefaultView () {
 
-			// Delete previous
-			borderLayout.getNorthContainer().clear();
-			borderLayout.getCenterContainer().clear();
-			borderLayout.getSouthContainer().clear();
+			// Hide other views
+            $('#error-view').addClass('hide');
+            $('#detail-view').addClass('hide');
+            $('body').addClass('stripes angled-135');
 
-			// Build
-			var background = document.createElement('div');
-			var message = document.createElement('div');
-
-			background.className = 'stripes angled-135';
-			background.appendChild(message);
-
-			message.className = 'info';
-			message.textContent = 'No image data received yet.';
-
-			borderLayout.getCenterContainer().appendChild(background);
-						
-			// Insert and repaint
-			borderLayout.repaint();
-
+            // Build
+            $('#default-view').removeClass('hide');
+			
 		},
 
 		deleteImage: function deleteImage () {
@@ -183,30 +181,26 @@ var UI = (function () {
 				return;
 			}
 
-			this.imageDetails.getImageDetails(getImageDetailsSuccess.bind(this), onError.bind(this));
+			this.imageDetails.getImageDetails(refreshSuccess.bind(this), onError.bind(this));
 		},
 
-		buildErrorView: function buildErrorView (error) {
+		buildErrorView: function buildErrorView (errorResponse) {
 			
-			// Delete previous
-			borderLayout.getNorthContainer().clear();
-			borderLayout.getCenterContainer().clear();
-			borderLayout.getSouthContainer().clear();
+			// Hide other views
+			$('#default-view').addClass('hide');
+			$('#detail-view').addClass('hide');
+			$('body').addClass('stripes angled-135');
 
 			// Build
-			var background = document.createElement('div');
-			var message = document.createElement('div');
+			if (errorResponse.message) {
+			       $('#error-view').text(errorResponse.message);
+			}
+			else {
+			       $('#error-view').text(errorResponse);
+			}
 
-			background.className = 'stripes angled-135';
-			background.appendChild(message);
+			$('#error-view').removeClass('hide');
 
-			message.className = 'error';
-			message.textContent = 'Error: Server returned the following error: ' + JSON.stringify(error.message);
-
-			borderLayout.getCenterContainer().appendChild(background);
-						
-			// Insert and repaint
-			borderLayout.repaint();
 		}
 	};
 
@@ -261,16 +255,40 @@ var UI = (function () {
 
 	getImageDetailsSuccess = function getImageDetailsSuccess (imageData) {
 		imageData = JSON.parse(imageData);
-		this.buildDetailView(imageData);
+
+		// Keep refreshing if no errors
+		if (!error) {
+			this.buildDetailView(imageData);
+
+			setTimeout(function () {
+			       this.imageDetails.getImageDetails(getImageDetailsSuccess.bind(this), onError.bind(this));
+			}.bind(this), delay);
+		}
+		else {
+			prevRefresh = false;
+		}
+
 	};
 
 	deleteImageSuccess = function deleteImageSuccess (response) {
-		this.buildDefaultView();
+		// Nothing
 	};
 
-	onError = function onError (error) {
-		this.buildErrorView(error);
-		MashupPlatform.widget.log('Error: ' + JSON.stringify(error));
+	refreshSuccess = function refreshSuccess (imageData) {
+		imageData = JSON.parse(imageData);
+
+		// Stop spin animation
+		$('#refresh-button > i').removeClass('fa-spin');
+
+		this.buildDetailView(imageData);
+	};
+
+
+	onError = function onError (errorResponse) {
+		error = true;
+		this.buildErrorView(errorResponse);
+		MashupPlatform.widget.log('Error: ' + JSON.stringify(errorResponse));
+
 	};
 
 	receiveImageId = function receiveImageId (wiringData) {
@@ -281,7 +299,16 @@ var UI = (function () {
 		JSTACK.Keystone.params.currentstate = 2;
 
 		this.imageDetails = new ImageDetails(wiringData.id);
-		this.imageDetails.getImageDetails(getImageDetailsSuccess.bind(this), onError.bind(this));
+
+		error = false;
+
+		if (!prevRefresh) {
+			prevRefresh = true;
+			this.imageDetails.getImageDetails(getImageDetailsSuccess.bind(this), onError.bind(this));
+		}
+		else {
+			this.imageDetails.getImageDetails(refreshSuccess.bind(this), onError.bind(this));
+		}
 	};
 
 
