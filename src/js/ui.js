@@ -48,11 +48,9 @@ var UI = (function () {
 
 	var deleteImageSuccess, getImageDetailsSuccess, receiveImageId,
 		onError, checkImageDetails, deleteImage, getDisplayableSize,
-		refreshSuccess;
+		refreshSuccess, initEvents;
 
-	var delay = 10000,
-		prevRefresh = false,
-		error = false;
+	var delay, prevRefresh, error;
 
 
 
@@ -62,19 +60,11 @@ var UI = (function () {
 
 	function UI () {
 
+		delay = 10000;
+		prevRefresh = false;
+		error = false;
 
-		// Register callback for input endpoint
-		MashupPlatform.wiring.registerCallback('image_id', receiveImageId.bind(this));
-
-
-		/* Context */
-		MashupPlatform.widget.context.registerCallback(function (newValues) {
-			if ("heightInPixels" in newValues || "widthInPixels" in newValues) {
-				$('body').attr('height', newValues.heightInPixels);
-				$('body').attr('width', newValues.widthInPixels);
-			}
-		});
-
+		initEvents.call(this);
 		this.buildDefaultView();
 	}
 
@@ -84,18 +74,6 @@ var UI = (function () {
 	*****************************************************************/
 
 	UI.prototype = {
-
-		init: function init () {
-
-			// Init click events
-			$('#refresh-button').click(function () {
-				$('#refresh-button > i').addClass('fa-spin');
-				this.refresh.call(this);
-			}.bind(this));
-			$('#delete-button').click(function () {
-				this.deleteImage.call(this);
-			}.bind(this));
-		},
 
 		buildDetailView: function buildDetailView (imageData) {
 
@@ -171,7 +149,7 @@ var UI = (function () {
 				return;
 			}
 
-			this.imageDetails.deleteImage(deleteImageSuccess.bind(this), onError.bind(this));
+			this.imageDetails.deleteImage(null, onError.bind(this));
 		},
 
 		refresh: function refresh () {
@@ -235,8 +213,8 @@ var UI = (function () {
 		var displayableSize = size;
 		var unit = 0;
 
-		if (size <= 1024) {
-			return size + units[0];
+		if (size < 1024) {
+			return size + ' ' + units[0];
 		}
 
 		while (parseFloat(displayableSize/1024) > parseFloat(1) && unit < 9) {
@@ -246,6 +224,31 @@ var UI = (function () {
 
 		return displayableSize.toFixed(2) + ' ' + units[unit];
 	
+	};
+
+	initEvents = function init () {
+
+		// Init click events
+		$('#refresh-button').click(function () {
+			$('#refresh-button > i').addClass('fa-spin');
+			this.refresh.call(this);
+		}.bind(this));
+		$('#delete-button').click(function () {
+			this.deleteImage.call(this);
+		}.bind(this));
+
+		// Register callback for input endpoint
+		MashupPlatform.wiring.registerCallback('image_id', receiveImageId.bind(this));
+
+
+		/* Context */
+		MashupPlatform.widget.context.registerCallback(function (newValues) {
+			if ("heightInPixels" in newValues || "widthInPixels" in newValues) {
+				$('body').attr('height', newValues.heightInPixels);
+				$('body').attr('width', newValues.widthInPixels);
+			}
+		});
+
 	};
 
 
@@ -268,10 +271,6 @@ var UI = (function () {
 			prevRefresh = false;
 		}
 
-	};
-
-	deleteImageSuccess = function deleteImageSuccess (response) {
-		// Nothing
 	};
 
 	refreshSuccess = function refreshSuccess (imageData) {
