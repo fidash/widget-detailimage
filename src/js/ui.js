@@ -14,29 +14,29 @@ var UI = (function () {
 
 	var statuses = {
 		'active': {
-			'class': 'glyphicon glyphicon-ok fa-2x fa-inverse',
+			'class': 'glyphicon glyphicon-ok fa-inverse',
 			'color': GREEN
 		},
 		'saving': {
-			'class': 'fa fa-floppy-o fa-2x',
+			'class': 'fa fa-floppy-o ',
 			'color': GREEN
 		},
 
 		'queued': {
-			'class': 'fa fa-spinner fa-pulse fa-2x fa-inverse',
+			'class': 'fa fa-spinner fa-pulse fa-inverse',
 			'color': AMBAR
 		},
 		'pending_delete': {
-			'class': 'fa fa-trash fa-2x fa-inverse',
+			'class': 'fa fa-trash fa-inverse',
 			'color': AMBAR
 		},
 
 		'killed': {
-			'class': 'glyphicon glyphicon-remove fa-2x fa-inverse',
+			'class': 'glyphicon glyphicon-remove fa-inverse',
 			'color': RED
 		},
 		'deleted': {
-			'class': 'fa fa-trash fa-2x fa-inverse',
+			'class': 'fa fa-trash fa-inverse',
 			'color': RED
 		}
 	};
@@ -101,8 +101,8 @@ var UI = (function () {
 			$('#image-updated > span').text(imageData.updated_at);
 
 			// Status
-			$('#image-status > i').removeClass();
-			$('#image-status > i').addClass(statuses[imageData.status].class);
+			$('#image-status > div > i').removeClass();
+			$('#image-status > div > i').addClass(statuses[imageData.status].class);
 			$('#image-status').attr('title', statusTooltip).css('background-color', statuses[imageData.status].color);
 
 			$('#image-status').attr('data-original-title', $('#image-status').attr('title'));
