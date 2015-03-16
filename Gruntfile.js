@@ -121,46 +121,6 @@ module.exports = function(grunt) {
                 src: ['src/test/**/*.js', '!src/test/fixtures/', '!src/test/StyledElements/*']
             }
         }
-    },
-
-    deleteWidget: {
-      // DELETE https://mashup.lab.fiware.org/api/resource/CoNWeT/openstack-imagedetails-widget/0.0.1?affected=true
-    },
-
-    uploadWidget: {
-      // POST https://mashup.lab.fiware.org/api/resources
-
-      // Request Headers
-      // Accept:application/json
-      // Accept-Encoding:gzip, deflate
-      // Accept-Language:es-ES,es;q=0.8,en;q=0.6
-      // Cache-Control:no-cache
-      // Connection:keep-alive
-      // Content-Length:243455
-      // Content-Type:multipart/form-data; boundary=----WebKitFormBoundarywTrR0pdYAmFEXiCi
-      // Cookie:oil_sid=abjh856ymduiy231axatu7a8n0wha6sr; policy_cookie=on
-      // Host:mashup.lab.fiware.org
-      // Origin:https://mashup.lab.fiware.org
-      // Pragma:no-cache
-      // Referer:https://mashup.lab.fiware.org/braulio/OpenStack
-      // User-Agent:Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/40.0.2214.94 Chrome/40.0.2214.94 Safari/537.36
-      // X-Requested-With:XMLHttpRequest
-
-      // Request Payload
-      // ------WebKitFormBoundarywTrR0pdYAmFEXiCi
-      // Content-Disposition: form-data; name="force_create"
-
-      // true
-      // ------WebKitFormBoundarywTrR0pdYAmFEXiCi
-      // Content-Disposition: form-data; name="file"; filename="CoNWeT_OpenStack-ImageDetails_0.0.1-dev.wgt"
-      // Content-Type: application/octet-stream
-
-
-      // ------WebKitFormBoundarywTrR0pdYAmFEXiCi
-      // Content-Disposition: form-data; name="install_embedded_resources"
-
-      // true
-      // ------WebKitFormBoundarywTrR0pdYAmFEXiCi--
     }
 
   });
