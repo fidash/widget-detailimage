@@ -244,8 +244,14 @@ var UI = (function () {
 		/* Context */
 		MashupPlatform.widget.context.registerCallback(function (newValues) {
 			if ("heightInPixels" in newValues || "widthInPixels" in newValues) {
+				var nonUsableWidth = 163;
+
+				// Set Body size
 				$('body').attr('height', newValues.heightInPixels);
 				$('body').attr('width', newValues.widthInPixels);
+
+				// Set image name max-width
+				$('#image-name').css('max-width', newValues.widthInPixels - nonUsableWidth);
 			}
 		});
 
