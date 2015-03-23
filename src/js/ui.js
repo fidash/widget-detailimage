@@ -8,6 +8,9 @@ var UI = (function () {
 	****************************COSNTANTS*****************************
 	*****************************************************************/
 
+	var NONUSABLEWIDTH = 163;
+
+	// Colors
 	var RED = 'rgb(211, 1, 1)';
 	var GREEN = 'green';
 	var AMBAR = 'rgb(239, 163, 0)';
@@ -48,7 +51,7 @@ var UI = (function () {
 
 	var deleteImageSuccess, getImageDetailsSuccess, receiveImageId,
 		onError, checkImageDetails, deleteImage, getDisplayableSize,
-		refreshSuccess, initEvents;
+		refreshSuccess, initEvents, setNameMaxWidth;
 
 	var delay, prevRefresh, error;
 
@@ -105,6 +108,10 @@ var UI = (function () {
 			$('#image-status > div > i').addClass(statuses[imageData.status].class);
 			$('#image-status').attr('title', statusTooltip).css('background-color', statuses[imageData.status].color);
 
+			// Set name max-width
+			setNameMaxWidth(NONUSABLEWIDTH);
+
+			// Fix tooltips
 			$('#image-status').attr('data-original-title', $('#image-status').attr('title'));
 			$('#image-status').attr('title', '');
 
@@ -226,6 +233,18 @@ var UI = (function () {
 	
 	};
 
+    setNameMaxWidth = function setNameMaxWidth (nonUsableWidth) {
+
+		var bodyWidth = $('body').attr('width');
+
+		if (bodyWidth >= 360) {
+			$('#image-name').css('max-width', bodyWidth - nonUsableWidth);
+		}
+		else {
+			$('#image-name').css('max-width', 360 - nonUsableWidth);
+		}
+	};
+
 	initEvents = function init () {
 
 		// Init click events
@@ -244,14 +263,13 @@ var UI = (function () {
 		/* Context */
 		MashupPlatform.widget.context.registerCallback(function (newValues) {
 			if ("heightInPixels" in newValues || "widthInPixels" in newValues) {
-				var nonUsableWidth = 163;
 
 				// Set Body size
 				$('body').attr('height', newValues.heightInPixels);
 				$('body').attr('width', newValues.widthInPixels);
 
-				// Set image name max-width
-				$('#image-name').css('max-width', newValues.widthInPixels - nonUsableWidth);
+				// Set name max-width
+				setNameMaxWidth(NONUSABLEWIDTH);
 			}
 		});
 
