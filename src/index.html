@@ -15,8 +15,25 @@
             <div style="padding-left: 0;">
                 <i class="glyphicon glyphicon-cd navbar-brand"></i>
                 <h4 id="image-name" data-toggle="tooltip" data-placement="bottom"></h4>
-                <button id="delete-button" class="btn btn-danger pull-right"><i class="fa fa-trash"></i></button>
-                <button id="refresh-button" class="btn btn-default pull-right"><i class="fa fa-refresh"></i></button>
+                <div id="instance-actions-dropdown" class="dropdown pull-right">
+                    <button id="dlabel" class="btn btn-primary" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Actions
+                        <span class="caret"></span>
+                    </button>
+
+                    <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                        <li id="refresh-button" class="clickable" role="presentation">
+                            <a role="menuitem" tabindex="-1">
+                                <i class="fa fa-refresh"></i> Refresh
+                            </a>
+                        </li>
+                        <li id="delete-button" class="clickable" role="presentation">
+                            <a role="menuitem" tabindex="-1">
+                                <i class="fa fa-trash"></i> Delete Image   
+                            </a>
+                        </li>
+                    </ul>
+                </div>
                 <a id="image-status" class="status pull-right" data-toggle="tooltip" data-placement="bottom">
                     <div>    
                         <i></i>
