@@ -249,7 +249,6 @@ var UI = (function () {
 
 		// Init click events
 		$('#refresh-button').click(function () {
-			$('#refresh-button > i').addClass('fa-spin');
 			this.refresh.call(this);
 		}.bind(this));
 		$('#delete-button').click(function () {
@@ -300,17 +299,21 @@ var UI = (function () {
 	refreshSuccess = function refreshSuccess (imageData) {
 		imageData = JSON.parse(imageData);
 
-		// Stop spin animation
-		$('#refresh-button > i').removeClass('fa-spin');
-
 		this.buildDetailView(imageData);
 	};
 
 
 	onError = function onError (errorResponse) {
-		error = true;
-		this.buildErrorView(errorResponse);
-		MashupPlatform.widget.log('Error: ' + JSON.stringify(errorResponse));
+
+		// Build default view if error is 404
+		if (errorResponse.message === '404 Error') {
+			this.buildDefaultView();
+		}
+		else {
+			error = true;
+			this.buildErrorView(errorResponse);
+			MashupPlatform.widget.log('Error: ' + JSON.stringify(errorResponse));
+		}
 
 	};
 
