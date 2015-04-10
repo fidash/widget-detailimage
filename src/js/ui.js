@@ -26,7 +26,7 @@ var UI = (function () {
 		},
 
 		'queued': {
-			'class': 'fa fa-spinner fa-pulse fa-inverse',
+			'class': 'glyphicon glyphicon-hourglass fa-inverse',
 			'color': AMBAR
 		},
 		'pending_delete': {
