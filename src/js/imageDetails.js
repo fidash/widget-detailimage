@@ -35,14 +35,19 @@ var ImageDetails = (function (JSTACK) {
 					return;
 				}
 
+				this.currentImage = JSON.parse(imageData);
 				callback(imageData);
 			}.bind(this);
 
-			JSTACK.Nova.getimagelist(true, onOk, onError);
+			JSTACK.Nova.getimagelist(true, onOk, onError, "Spain2");
 		},
 
 		deleteImage: function deleteImage (callback, onError) {
-			JSTACK.Nova.deleteimage(this.imageId, callback, onError);
+			JSTACK.Nova.deleteimage(this.imageId, callback, onError, "Spain2");
+		},
+
+		updateImage: function updateImage (name, is_public, callback, onError) {
+			JSTACK.Glance.updateimage(this.currentImage.id, name, is_public, undefined, callback, onError, "Spain2");
 		}
 	};
 

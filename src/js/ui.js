@@ -51,7 +51,7 @@ var UI = (function () {
 
 	var deleteImageSuccess, getImageDetailsSuccess, receiveImageId,
 		onError, checkImageDetails, deleteImage, getDisplayableSize,
-		refreshSuccess, initEvents, setNameMaxWidth;
+		refreshSuccess, initEvents, setNameMaxWidth, imageUpdateSuccess;
 
 	var delay, prevRefresh, error;
 
@@ -80,6 +80,11 @@ var UI = (function () {
 
 		buildDetailView: function buildDetailView (imageData) {
 
+			// Prevent overwriting the edit view
+			if (!$('#edit-view').hasClass('hide')) {
+				return;
+			}
+
 			var visibility = imageData.is_public ? 'Public' : 'Private';
 			var displayableSize = getDisplayableSize(imageData.size);
 			var statusTooltip = 'Status: ' + imageData.status;
@@ -88,6 +93,7 @@ var UI = (function () {
 			// Hide other views
 			$('#error-view').addClass('hide');
 			$('#default-view').addClass('hide');
+			$('#edit-view').addClass('hide');
 			$('body').removeClass('stripes angled-135');
 
 			// Fields
@@ -133,7 +139,7 @@ var UI = (function () {
 			}			
 
 			// Build
-			$('#detail-view').removeClass('hide');			
+			$('#detail-view').removeClass('hide');
 			
 		},
 
@@ -142,6 +148,7 @@ var UI = (function () {
 			// Hide other views
             $('#error-view').addClass('hide');
             $('#detail-view').addClass('hide');
+            $('#edit-view').addClass('hide');
             $('body').addClass('stripes angled-135');
 
             // Build
@@ -169,11 +176,27 @@ var UI = (function () {
 			this.imageDetails.getImageDetails(refreshSuccess.bind(this), onError.bind(this));
 		},
 
+		updateImage: function updateImage () {
+
+			if (!checkImageDetails.call(this)) {
+				MashupPlatform.widget.log('Error: No image received yet.');
+				return;
+			}
+
+			var name = $('#image-name-form').val();
+			var is_public = $('#image-is_public-form').val();
+			var min_ram = $('#image-min-ram-form').val();
+			var min_disk = $('#image-min-disk-form').val();
+
+			this.imageDetails.updateImage(name, is_public, imageUpdateSuccess.bind(this), onError.bind(this));
+		},
+
 		buildErrorView: function buildErrorView (errorResponse) {
 			
 			// Hide other views
 			$('#default-view').addClass('hide');
 			$('#detail-view').addClass('hide');
+			$('#edit-view').addClass('hide');
 			$('body').addClass('stripes angled-135');
 
 			// Build
@@ -186,6 +209,27 @@ var UI = (function () {
 
 			$('#error-view').removeClass('hide');
 
+		},
+
+		buildEditView: function buildEditView () {
+
+			// Hide other views
+			$('#error-view').addClass('hide');
+			$('#default-view').addClass('hide');
+			$('#detail-view').addClass('hide');
+			$('body').removeClass('stripes angled-135');
+
+			// Fill the fields with current image values
+			$('#image-name-form').val(this.imageDetails.currentImage.name);
+			$('#image-disk-format-form').val(this.imageDetails.currentImage.disk_format);
+			$('#image-container-format-form').val(this.imageDetails.currentImage.container_format);
+			$('#image-min-disk-form').val(this.imageDetails.currentImage.min_disk);
+			$('#image-min-ram-form').val(this.imageDetails.currentImage.min_ram);
+			$('#image-is_public-form').val(this.imageDetails.currentImage.is_public);
+			$('#image-protected-form').val(this.imageDetails.currentImage.protected);
+
+			// Build
+			$('#edit-view').removeClass('hide');
 		}
 	};
 
@@ -251,9 +295,29 @@ var UI = (function () {
 		$('#refresh-button').click(function () {
 			this.refresh.call(this);
 		}.bind(this));
+		$('#edit-button').click(function () {
+			this.buildEditView.call(this);
+		}.bind(this));
 		$('#delete-button').click(function () {
 			this.deleteImage.call(this);
 		}.bind(this));
+		$('#update-image').click(function (e) {
+			this.updateImage.call(this);
+			$('#edit-view').addClass('hide');
+			e.preventDefault();
+		}.bind(this));
+		$('#close-edit').click(function (e) {
+			// Hide other views
+			$('#error-view').addClass('hide');
+			$('#default-view').addClass('hide');
+			$('#edit-view').addClass('hide');
+			$('body').removeClass('stripes angled-135');
+
+			// Build
+			$('#detail-view').removeClass('hide');
+
+			e.preventDefault();
+		});
 
 		// Register callback for input endpoint
 		MashupPlatform.wiring.registerCallback('image_id', receiveImageId.bind(this));
@@ -294,6 +358,10 @@ var UI = (function () {
 			prevRefresh = false;
 		}
 
+	};
+
+	imageUpdateSuccess = function updateImageSuccess (imageData) {
+		this.refresh.call(this);
 	};
 
 	refreshSuccess = function refreshSuccess (imageData) {
