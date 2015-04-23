@@ -163,7 +163,7 @@ var UI = (function () {
 				return;
 			}
 
-			this.imageDetails.deleteImage(null, onError.bind(this));
+			this.imageDetails.deleteImage(deleteImageSuccess.bind(this), onError.bind(this));
 		},
 
 		refresh: function refresh () {
@@ -370,11 +370,16 @@ var UI = (function () {
 		this.buildDetailView(imageData);
 	};
 
+	deleteImageSuccess = function deleteImageSuccess () {
+		error = true;
+		this.buildDefaultView();
+	};
+
 
 	onError = function onError (errorResponse) {
 
 		// Build default view if error is 404
-		if (errorResponse.message === '404 Error') {
+		if (errorResponse.message === 'Error 404') {
 			this.buildDefaultView();
 		}
 		else {

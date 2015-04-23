@@ -57,6 +57,10 @@ describe('Test image details', function () {
 
 	beforeEach(function () {
 
+		JSTACK.Keystone = jasmine.createSpyObj("Keystone", ["init", "authenticate", "gettenants", "params", "getservice"]);
+		JSTACK.Nova = jasmine.createSpyObj("Nova", ["deleteimage", "getimagelist", "params"]);
+		JSTACK.Comm = jasmine.createSpyObj("Comm",  ["getEndpoint", "del"]);
+
 		jasmine.getFixtures().fixturesPath = 'src/test/fixtures/html';
 		loadFixtures('defaultTemplate.html');
 
@@ -113,11 +117,14 @@ describe('Test image details', function () {
 	it('should call JSTACK.Nova.deleteimage', function () {
 
 		var imageId = 'id';
+		var service = JSTACK.Keystone.getservice(JSTACK.Nova.params.service);
+		var url = JSTACK.Comm.getEndpoint(service, "Spain2", JSTACK.Nova.params.endpointType) + '/images/' + imageId;
 
 		receiveWiringEvent(imageId);
 		ui.deleteImage();
 
-		expect(JSTACK.Nova.deleteimage).toHaveBeenCalled();
+		//expect(JSTACK.Nova.deleteimage).toHaveBeenCalled();
+		expect(MashupPlatform.http.makeRequest).toHaveBeenCalledWith(url, jasmine.any(Object));
 		expect(ui.imageDetails).toExist();
 	});
 
@@ -339,6 +346,8 @@ describe('Test image details', function () {
 		var imageId = 'id';
 		var eventSpy = spyOnEvent('#delete-button', 'click');
 		var expectedCountDeleteImage;
+		var service = JSTACK.Keystone.getservice(JSTACK.Nova.params.service);
+		var url = JSTACK.Comm.getEndpoint(service, "Spain2", JSTACK.Nova.params.endpointType) + '/images/' + imageId;
 
 		receiveWiringEvent(imageId);
 		getImageDetailsSuccess(respImageList);
@@ -347,7 +356,8 @@ describe('Test image details', function () {
 		$('#delete-button').trigger('click');
 
 		expect(eventSpy).toHaveBeenTriggered();
-		expect(JSTACK.Nova.deleteimage.calls.count()).toEqual(expectedCountDeleteImage);
+		expect(MashupPlatform.http.makeRequest).toHaveBeenCalledWith(url, jasmine.any(Object));
+		//expect(JSTACK.Nova.deleteimage.calls.count()).toEqual(expectedCountDeleteImage);
 	});
 
 	it('should not call setTimeout the second time a wiring event is received', function () {

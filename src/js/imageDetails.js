@@ -1,4 +1,4 @@
-/* global UI */
+/* global UI MashupPlatform */
 
 var ImageDetails = (function (JSTACK) {
 	"use strict";
@@ -31,7 +31,7 @@ var ImageDetails = (function (JSTACK) {
 				}
 
 				if (!imageData) {
-					onError("Image with ID " + this.imageId + " does not exist.");
+					onError({message: "Error 404", body: "Image with ID " + this.imageId + " does not exist."});
 					return;
 				}
 
@@ -43,7 +43,22 @@ var ImageDetails = (function (JSTACK) {
 		},
 
 		deleteImage: function deleteImage (callback, onError) {
-			JSTACK.Nova.deleteimage(this.imageId, callback, onError, "Spain2");
+			
+			//JSTACK.Nova.deleteimage(this.imageId, callback, onError, "Spain2");
+			var service = JSTACK.Keystone.getservice(JSTACK.Nova.params.service);
+			var url = JSTACK.Comm.getEndpoint(service, "Spain2", JSTACK.Nova.params.endpointType);
+	        var deleteUrl = url + '/images/' + this.imageId;
+	        var headers = {
+	        	"X-Auth-Token": JSTACK.Keystone.params.token
+	        };
+
+	        MashupPlatform.http.makeRequest(deleteUrl, {
+	        	method: 'DELETE',
+	        	requestHeaders: headers,
+	        	onSuccess: callback,
+	        	onFailure: onError
+	        });
+	        
 		},
 
 		updateImage: function updateImage (name, is_public, callback, onError) {
