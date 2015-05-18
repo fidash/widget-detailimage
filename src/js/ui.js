@@ -5,7 +5,7 @@ var UI = (function () {
 
 	
 	/*****************************************************************
-	****************************COSNTANTS*****************************
+	****************************CONSTANTS*****************************
 	*****************************************************************/
 
 	var NONUSABLEWIDTH = 163;
@@ -290,19 +290,19 @@ var UI = (function () {
 	};
 
 	initEvents = function init () {
-
+		
 		// Init click events
 		$('#refresh-button').click(function () {
-			this.refresh.call(this);
+			this.refresh();
 		}.bind(this));
 		$('#edit-button').click(function () {
-			this.buildEditView.call(this);
+			this.buildEditView();
 		}.bind(this));
 		$('#delete-button').click(function () {
-			this.deleteImage.call(this);
+			this.deleteImage();
 		}.bind(this));
 		$('#update-image').click(function (e) {
-			this.updateImage.call(this);
+			this.updateImage();
 			$('#edit-view').addClass('hide');
 			e.preventDefault();
 		}.bind(this));
@@ -394,8 +394,9 @@ var UI = (function () {
 		wiringData = JSON.parse(wiringData);
 
 		JSTACK.Keystone.params.access = wiringData.access;
-		JSTACK.Keystone.params.token = wiringData.access.token.id;
+		JSTACK.Keystone.params.token = wiringData.token;
 		JSTACK.Keystone.params.currentstate = 2;
+		JSTACK.Keystone.params.version = 3;
 
 		this.imageDetails = new ImageDetails(wiringData.id);
 

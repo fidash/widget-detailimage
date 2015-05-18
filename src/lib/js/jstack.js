@@ -2530,7 +2530,7 @@ JSTACK.Cinder = (function (JS, undefined) {
             var service = JS.Keystone.getservice("volume");
             if (service) {
                 //params.url = JSTACK.Comm.getEndpoint(service, region, params.endpointType);
-                params.url = 'https://cloud.lab.fiware.org/Spain2/volume/v1/' + JS.Keystone.params.access.token.tenant.id;
+                params.url = 'https://cloud.lab.fiware.org/Spain2/volume/v1/' + JS.Keystone.params.access.project.id;
                 return true;
             }
             return false;
