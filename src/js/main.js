@@ -1,8 +1,8 @@
 /* global UI */
 
 window.addEventListener('DOMContentLoaded', function () {
-	"use strict";
+    "use strict";
 
-	var ui = new UI();
+    var ui = new UI();
 
 }, false);
