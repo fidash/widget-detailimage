@@ -67,7 +67,7 @@
       "size":6279266304
     },
     {  
-      "status":"active",
+      "status":"queued",
       "name":"UTBigDataAssign5",
       "deleted":false,
       "container_format":"ovf",

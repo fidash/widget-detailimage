@@ -1,8 +1,8 @@
-/* global UI */
+/* global ImageDetails */
 
 window.addEventListener('DOMContentLoaded', function () {
     "use strict";
 
-    var ui = new UI();
+    new ImageDetails();
 
 }, false);
