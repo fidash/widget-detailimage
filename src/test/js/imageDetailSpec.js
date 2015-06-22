@@ -71,7 +71,7 @@ describe('Test image details', function () {
         var imageId = 'id';
         
         receiveWiringEvent(imageId);
-        MashupPlatform.reset();
+
         expect(JSTACK.Nova.getimagelist).toHaveBeenCalled();
     });
 

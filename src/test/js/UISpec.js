@@ -121,6 +121,11 @@ describe("User Interface", function () {
 
 	});
 
+
+    /*********************************************************************************************
+    *                               I N T E R F A C E   T E S T S                                *
+    *********************************************************************************************/
+
     units.forEach(function (unit) {
         it('should display image size in ' + unit.unit, function () {
             
