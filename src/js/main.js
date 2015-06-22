@@ -3,6 +3,7 @@
 window.addEventListener('DOMContentLoaded', function () {
     "use strict";
 
-    new ImageDetails();
+    var imageDetails = new ImageDetails();
+    imageDetails.init();
 
 }, false);
