@@ -243,6 +243,19 @@ describe("User Interface", function () {
 
         expect(eventSpy).toHaveBeenTriggered();
         expect(JSTACK.Nova.getimagelist).toHaveBeenCalled();
+
+    });
+
+    it('should not call setTimeout after clicking the refresh button', function () {
+
+        var imageId = 'f3c6536a-4604-47d7-96b7-daf7ff1455ca';
+        var eventSpy = spyOnEvent('#refresh-button', 'click');
+        var setTimeoutSpy = spyOn(window, 'setTimeout');
+        
+        receiveWiringEvent(imageId);
+
+        $('#refresh-button').trigger('click');
+
         expect(setTimeoutSpy).not.toHaveBeenCalled();
 
     });

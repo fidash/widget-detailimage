@@ -167,7 +167,7 @@ var ImageDetails = (function (JSTACK) {
             var min_disk = $('#image-min-disk-form').val();
 
             JSTACK.Glance.updateimage(this.imageId, name, is_public, undefined, this.getImageDetails.bind(this, false), onError.bind(this), this.region);
-        },
+        }
     };
 
 
