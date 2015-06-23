@@ -100,6 +100,7 @@ describe('Test image details', function () {
         deleteCallback();
 
         expect(buildDefaultViewSpy).toHaveBeenCalled();
+        expect(imageDetails.error).toBe(true);
     });
 
     it('should call JSTACK.Nova.getimagelist error callback', function () {
