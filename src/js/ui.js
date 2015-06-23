@@ -134,18 +134,22 @@ var UI = (function () {
         // Init click events
         $('#refresh-button').click(function () {
             callbacks.refresh();
-        }.bind(this));
+        });
+
         $('#edit-button').click(function () {
-            this.buildEditView(currentImage);
-        }.bind(this));
+            UI.buildEditView(currentImage);
+        });
+
         $('#delete-button').click(function () {
             callbacks.delete();
-        }.bind(this));
+        });
+
         $('#update-image').click(function (e) {
             callbacks.update();
             $('#edit-view').addClass('hide');
             e.preventDefault();
-        }.bind(this));
+        });
+
         $('#close-edit').click(function (e) {
             // Hide other views
             $('#error-view').addClass('hide');
