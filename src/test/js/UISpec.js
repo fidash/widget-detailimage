@@ -309,6 +309,24 @@ describe("User Interface", function () {
         expect('#detail-view').toHaveClass('hide');
     });
 
+    it('should not build the default view while the edit view is opened', function () {
+        var image = respImageList.images[0];
+
+        UI.buildEditView(image);
+        UI.buildDefaultView();
+
+        expect('#default-view').toHaveClass('hide');
+    });
+
+    it('should not build the error view while the edit view is opened', function () {
+        var image = respImageList.images[0];
+
+        UI.buildEditView(image);
+        UI.buildErrorView('error');
+
+        expect('#error-view').toHaveClass('hide');
+    });
+
     it('should call the imageUpdate function after clicking in the update button', function () {
         var callbacks = jasmine.createSpyObj('callbacks', ['refresh', 'update', 'delete']);
         var eventSpy = spyOnEvent('#update-image', 'click');

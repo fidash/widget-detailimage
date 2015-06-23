@@ -61,6 +61,26 @@ var UI = (function () {
         }
     }
 
+    function isEditing () {
+        return !$('#edit-view').hasClass('hide');
+    }
+
+    function showView (viewId) {
+
+        // Hide all views
+        $('#error-view').addClass('hide');
+        $('#default-view').addClass('hide');
+        $('#edit-view').addClass('hide');
+        $('body').removeClass('stripes angled-135');
+        $('#detail-view').addClass('hide');
+
+        if (viewId === 'default-view' || viewId === 'error-view') {
+            $('body').addClass('stripes angled-135');
+        }
+
+        $('#' + viewId).removeClass('hide');
+    }
+
 
     /*****************************************************************
     *                           P U B L I C                          *
@@ -119,7 +139,7 @@ var UI = (function () {
     function buildDetailView (imageData) {
 
         // Prevent overwriting the edit view
-        if (!$('#edit-view').hasClass('hide')) {
+        if (isEditing()) {
             return;
         }
 
@@ -127,12 +147,6 @@ var UI = (function () {
         var displayableSize = Utils.getDisplayableSize(imageData.size);
         var statusTooltip = 'Status: ' + imageData.status;
         var deleteButtonClass;
-
-        // Hide other views
-        $('#error-view').addClass('hide');
-        $('#default-view').addClass('hide');
-        $('#edit-view').addClass('hide');
-        $('body').removeClass('stripes angled-135');
 
         // Fields
         $('#image-name').text(imageData.name);
@@ -176,32 +190,28 @@ var UI = (function () {
             $('#delete-button').removeAttr('disabled');
         }           
 
-        // Build
-        $('#detail-view').removeClass('hide');
+        showView('detail-view');
         
     }
 
     function buildDefaultView () {
 
-        // Hide other views
-        $('#error-view').addClass('hide');
-        $('#detail-view').addClass('hide');
-        $('#edit-view').addClass('hide');
-        $('body').addClass('stripes angled-135');
+        // Prevent overwriting the edit view
+        if (isEditing()) {
+            return;
+        }
 
-        // Build
-        $('#default-view').removeClass('hide');
+        showView('default-view');
             
     }
 
     function buildErrorView (errorResponse) {
-            
-        // Hide other views
-        $('#default-view').addClass('hide');
-        $('#detail-view').addClass('hide');
-        $('#edit-view').addClass('hide');
-        $('body').addClass('stripes angled-135');
 
+        // Prevent overwriting the edit view
+        if (isEditing()) {
+            return;
+        }
+            
         // Build
         if (errorResponse.message) {
                $('#error-view').text(errorResponse.message);
@@ -210,20 +220,14 @@ var UI = (function () {
                $('#error-view').text(errorResponse);
         }
 
-        $('#error-view').removeClass('hide');
+        showView('error-view');
 
     }
 
     function buildEditView (currentImage) {
 
-        // Hide other views
-        $('#error-view').addClass('hide');
-        $('#default-view').addClass('hide');
-        $('#detail-view').addClass('hide');
-        $('body').removeClass('stripes angled-135');
-
+        
         // Fill the fields with current image values
-
         $('#image-name-form').val(currentImage.name);
         $('#image-disk-format-form').val(currentImage.disk_format);
         $('#image-container-format-form').val(currentImage.container_format);
@@ -232,8 +236,8 @@ var UI = (function () {
         $('#image-is_public-form').val(currentImage.is_public);
         $('#image-protected-form').val(currentImage.protected);
 
-        // Build
-        $('#edit-view').removeClass('hide');
+        showView('edit-view');
+
     }
 
 
