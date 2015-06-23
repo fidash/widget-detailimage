@@ -81,6 +81,49 @@ var UI = (function () {
         $('#' + viewId).removeClass('hide');
     }
 
+    function buildDetails (imageData) {
+
+        var visibility = imageData.is_public ? 'Public' : 'Private';
+        var displayableSize = Utils.getDisplayableSize(imageData.size);
+        var statusTooltip = 'Status: ' + imageData.status;
+        var isDisabled = imageData.protected ? true : false;
+
+        // Fields
+        $('#image-name').text(imageData.name);
+        $('#image-name').attr('title', imageData.name);
+        $('#image-id > span').text(imageData.id);
+        $('#image-visibility > span').text(visibility);
+        $('#image-size > span').text(displayableSize);
+        $('#image-checksum > span').text(imageData.checksum)
+            .attr('title', imageData.checksum);
+        $('#image-container-format > span').text(imageData.container_format);
+        $('#image-disk-format > span').text(imageData.disk_format);
+        $('#image-created > span').text(imageData.created_at);
+        $('#image-updated > span').text(imageData.updated_at);
+
+        // Status
+        $('#image-status > div > i').removeClass();
+        $('#image-status > div > i').addClass(STATES[imageData.status].class);
+        $('#image-status').attr('title', statusTooltip).css('background-color', STATES[imageData.status].color);
+
+        // Disable delete button if protected
+        $('#delete-button').attr('disabled', isDisabled);
+
+    }
+
+    function fixTooltips () {
+
+        $('#image-status').attr('data-original-title', $('#image-status').attr('title'));
+        $('#image-status').attr('title', '');
+
+        $('#image-name').attr('data-original-title', $('#image-name').attr('title'));
+        $('#image-name').attr('title', '');
+
+        $('#image-checksum > span').attr('data-original-title', $('#image-checksum > span').attr('title'));
+        $('#image-checksum > span').attr('title', '');
+
+    }
+
 
     /*****************************************************************
     *                           P U B L I C                          *
@@ -143,52 +186,12 @@ var UI = (function () {
             return;
         }
 
-        var visibility = imageData.is_public ? 'Public' : 'Private';
-        var displayableSize = Utils.getDisplayableSize(imageData.size);
-        var statusTooltip = 'Status: ' + imageData.status;
-        var deleteButtonClass;
-
-        // Fields
-        $('#image-name').text(imageData.name);
-        $('#image-name').attr('title', imageData.name);
-        $('#image-id > span').text(imageData.id);
-        $('#image-visibility > span').text(visibility);
-        $('#image-size > span').text(displayableSize);
-        $('#image-checksum > span').text(imageData.checksum)
-            .attr('title', imageData.checksum);
-        $('#image-container-format > span').text(imageData.container_format);
-        $('#image-disk-format > span').text(imageData.disk_format);
-        $('#image-created > span').text(imageData.created_at);
-        $('#image-updated > span').text(imageData.updated_at);
-
-        // Status
-        $('#image-status > div > i').removeClass();
-        $('#image-status > div > i').addClass(STATES[imageData.status].class);
-        $('#image-status').attr('title', statusTooltip).css('background-color', STATES[imageData.status].color);
-
-        // Set name max-width
+        buildDetails(imageData);
         setNameMaxWidth(NONUSABLEWIDTH);
-
-        // Fix tooltips
-        $('#image-status').attr('data-original-title', $('#image-status').attr('title'));
-        $('#image-status').attr('title', '');
-
-        $('#image-name').attr('data-original-title', $('#image-name').attr('title'));
-        $('#image-name').attr('title', '');
-
-        $('#image-checksum > span').attr('data-original-title', $('#image-checksum > span').attr('title'));
-        $('#image-checksum > span').attr('title', '');
+        fixTooltips();
 
         // Initialize tooltips
         $('[data-toggle="tooltip"]').tooltip();
-
-        // Disable delete button if protected
-        if (imageData.protected) {
-            $('#delete-button').attr('disabled', 'disabled');
-        }
-        else {
-            $('#delete-button').removeAttr('disabled');
-        }           
 
         showView('detail-view');
         
