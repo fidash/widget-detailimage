@@ -133,7 +133,7 @@ var UI = (function () {
         
         // Init click events
         $('#refresh-button').click(function () {
-            callbacks.refresh();
+            callbacks.refresh(false);
         });
 
         $('#edit-button').click(function () {

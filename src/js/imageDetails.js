@@ -21,7 +21,7 @@ var ImageDetails = (function (JSTACK) {
     *****************************************************************/
 
     function hasReceivedImage () {
-        return this.imageId && this.region ? true : false;
+        return this.imageId && this.region;
     }
 
     function drawDetails (autoRefresh, imageData) {
@@ -72,7 +72,7 @@ var ImageDetails = (function (JSTACK) {
         this.imageId = wiringData.id;
         this.region = wiringData.region;
         this.error = false;
-        this.getImageDetails.call(this, this.firstRefresh);
+        this.getImageDetails(this.firstRefresh);
         this.firstRefresh = false;
     }
 
@@ -86,7 +86,7 @@ var ImageDetails = (function (JSTACK) {
         init: function init () {
 
             var callbacks = {
-                refresh: this.getImageDetails.bind(this, false),
+                refresh: this.getImageDetails.bind(this),
                 delete: this.deleteImage.bind(this),
                 update: this.updateImage.bind(this)
             };
