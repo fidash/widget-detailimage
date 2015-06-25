@@ -129,7 +129,7 @@ var UI = (function () {
     *                           P U B L I C                          *
     *****************************************************************/
 
-    function init (callbacks, currentImage) {
+    function init (callbacks) {
         
         // Init click events
         $('#refresh-button').click(function () {
@@ -137,7 +137,7 @@ var UI = (function () {
         });
 
         $('#edit-button').click(function () {
-            UI.buildEditView(currentImage);
+            UI.buildEditView();
         });
 
         $('#delete-button').click(function () {
@@ -231,10 +231,14 @@ var UI = (function () {
 
     }
 
-    function buildEditView (currentImage) {
+    function buildEditView () {
 
-        
-        // Fill the fields with current image values
+        showView('edit-view');
+
+    }
+
+    function fillEditForm (currentImage) {
+
         $('#image-name-form').val(currentImage.name);
         $('#image-disk-format-form').val(currentImage.disk_format);
         $('#image-container-format-form').val(currentImage.container_format);
@@ -242,8 +246,6 @@ var UI = (function () {
         $('#image-min-ram-form').val(currentImage.min_ram);
         $('#image-is_public-form').val(currentImage.is_public);
         $('#image-protected-form').val(currentImage.protected);
-
-        showView('edit-view');
 
     }
 
@@ -253,7 +255,8 @@ var UI = (function () {
         buildDefaultView: buildDefaultView,
         buildDetailView: buildDetailView,
         buildErrorView: buildErrorView,
-        buildEditView: buildEditView
+        buildEditView: buildEditView,
+        fillEditForm: fillEditForm
     };
 
 })();

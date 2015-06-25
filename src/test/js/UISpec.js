@@ -281,14 +281,13 @@ describe("User Interface", function () {
     });
 
     it('should build the edit view', function () {
-        var image = respImageList.images[0];
 
-        UI.buildEditView(image);
+        UI.buildEditView();
 
         expect('#edit-view').not.toHaveClass('hide');
     });
 
-    it('should build the edit after clicking in the edit button', function () {
+    it('should build the edit view after clicking in the edit button', function () {
         var imageId = 'f3c6536a-4604-47d7-96b7-daf7ff1455ca';
         var eventSpy = spyOnEvent('#edit-button', 'click');
         var buildEditViewSpy = spyOn(UI, 'buildEditView');
@@ -297,7 +296,7 @@ describe("User Interface", function () {
         $('#edit-button').trigger('click');
 
         expect('click').toHaveBeenTriggeredOn('#edit-button');
-        expect(buildEditViewSpy).toHaveBeenCalledWith(imageDetails.currentImage);
+        expect(buildEditViewSpy).toHaveBeenCalled();
     });
 
     it('should not build the details view while the edit view is opened', function () {

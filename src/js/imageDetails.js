@@ -94,7 +94,7 @@ var ImageDetails = (function (JSTACK) {
             // Register callback for input endpoint
             MashupPlatform.wiring.registerCallback('image_id', receiveImageId.bind(this));
 
-            UI.init(callbacks, this.currentImage);
+            UI.init(callbacks);
 
         },
 
@@ -123,7 +123,7 @@ var ImageDetails = (function (JSTACK) {
                     return;
                 }
 
-                this.currentImage = JSON.parse(imageData);
+                UI.fillEditForm(JSON.parse(imageData));
                 drawDetails.call(this, autoRefresh, imageData);
             }.bind(this);
 
