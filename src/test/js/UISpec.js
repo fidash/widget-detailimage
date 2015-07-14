@@ -148,8 +148,8 @@ describe("User Interface", function () {
                 'created': imageData.created_at,
                 'updated': imageData.updated_at,
                 'size': parseFloat(imageData.size/1024/1024/1024).toFixed(2) + " GiB",
-                'container-format': imageData.container_format,
-                'disk-format': imageData.disk_format
+                'container_format': imageData.container_format,
+                'disk_format': imageData.disk_format
         };
         var imageName = imageData.name;
         var statusTitle = 'Status: ' + imageData.status;
@@ -174,8 +174,8 @@ describe("User Interface", function () {
                 'created': imageData.created_at,
                 'updated': imageData.updated_at,
                 'size': parseFloat(imageData.size/1024/1024/1024).toFixed(2) + " GiB",
-                'container-format': imageData.container_format,
-                'disk-format': imageData.disk_format
+                'container_format': imageData.container_format,
+                'disk_format': imageData.disk_format
         };
         var imageName = imageData.name;
         var statusTitle = 'Status: ' + imageData.status;
@@ -367,5 +367,27 @@ describe("User Interface", function () {
         UI.init();
 
         expect(buildDefaultViewSpy).toHaveBeenCalled();
+    });
+
+    it('should fill the edit form', function () {
+        var image = {
+            name: "img",
+            disk_format: "iso",
+            container_format: "bare",
+            min_disk: "0",
+            min_ram: "0",
+            is_public: true,
+            protected: true
+        };
+
+        UI.fillEditForm(image);
+
+        for (var field in image) {
+            if (typeof image[field] === 'boolean') {
+                expect('#image-' + field + '-form').toHaveValue(image[field].toString());
+                continue;
+            }
+            expect('#image-' + field + '-form').toHaveValue(image[field]);
+        }
     });
 });

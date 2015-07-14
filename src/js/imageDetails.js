@@ -163,8 +163,8 @@ var ImageDetails = (function (JSTACK) {
 
             var name = $('#image-name-form').val();
             var is_public = $('#image-is_public-form').val();
-            var min_ram = $('#image-min-ram-form').val();
-            var min_disk = $('#image-min-disk-form').val();
+            var min_ram = $('#image-min_ram-form').val();
+            var min_disk = $('#image-min_disk-form').val();
 
             JSTACK.Glance.updateimage(this.imageId, name, is_public, undefined, this.getImageDetails.bind(this, false), onError.bind(this), this.region);
         }

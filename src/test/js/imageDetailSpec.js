@@ -296,4 +296,14 @@ describe('Test image details', function () {
 
     });
 
+    it('should call fillEditForm when the image is refreshed', function () {
+        var imageId = 'f3c6536a-4604-47d7-96b7-daf7ff1455ca';
+        var fillEditFormSpy = spyOn(UI, 'fillEditForm');
+
+        receiveWiringEvent(imageId);
+        getImageDetailsSuccess(respImageList);
+
+        expect(fillEditFormSpy).toHaveBeenCalled();
+    });
+
 });

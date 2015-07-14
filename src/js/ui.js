@@ -96,8 +96,8 @@ var UI = (function () {
         $('#image-size > span').text(displayableSize);
         $('#image-checksum > span').text(imageData.checksum)
             .attr('title', imageData.checksum);
-        $('#image-container-format > span').text(imageData.container_format);
-        $('#image-disk-format > span').text(imageData.disk_format);
+        $('#image-container_format > span').text(imageData.container_format);
+        $('#image-disk_format > span').text(imageData.disk_format);
         $('#image-created > span').text(imageData.created_at);
         $('#image-updated > span').text(imageData.updated_at);
 
@@ -240,10 +240,10 @@ var UI = (function () {
     function fillEditForm (currentImage) {
 
         $('#image-name-form').val(currentImage.name);
-        $('#image-disk-format-form').val(currentImage.disk_format);
-        $('#image-container-format-form').val(currentImage.container_format);
-        $('#image-min-disk-form').val(currentImage.min_disk);
-        $('#image-min-ram-form').val(currentImage.min_ram);
+        $('#image-disk_format-form').val(currentImage.disk_format);
+        $('#image-container_format-form').val(currentImage.container_format);
+        $('#image-min_disk-form').val(currentImage.min_disk);
+        $('#image-min_ram-form').val(currentImage.min_ram);
         $('#image-is_public-form').val(currentImage.is_public);
         $('#image-protected-form').val(currentImage.protected);
 

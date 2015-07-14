@@ -27,9 +27,9 @@
                   </div>
                 </div>
                 <div class="form-group">
-                  <label class="control-label " for="image-disk-format-form">Disk Format</label>
+                  <label class="control-label " for="image-disk_format-form">Disk Format</label>
                   <div class=" ">
-                    <select class="form-control switchable" id="image-disk-format-form" name="x-image-meta-disk-format">
+                    <select class="form-control switchable" id="image-disk_format-form" name="x-image-meta-disk-format">
                       <option value="" selected="selected">Select format</option>
                       <option value="aki">AKI - Amazon Kernel Image</option>
                       <option value="ami">AMI - Amazon Machine Image</option>
@@ -44,9 +44,9 @@
                   </div>
                 </div>
                 <div class="form-group">
-                  <label class="control-label " for="image-container-format-form">Container Format</label>
+                  <label class="control-label " for="image-container_format-form">Container Format</label>
                   <div class=" ">
-                    <select class="form-control switchable" id="image-container-format-form" name="x-image-meta-container-format">
+                    <select class="form-control switchable" id="image-container_format-form" name="x-image-meta-container-format">
                       <option value="" selected="selected">Select format</option>
                       <option value="ovf">OVF - Container format</option>
                       <option value="bare"> Bare - No container envelope for the image</option>
@@ -61,17 +61,17 @@
             <div class="pull-right col-xs-6">
               <fieldset>
                 <div class="form-group ">
-                  <label class="control-label  " for="image-min-disk-form">Minimum Disk (GB)</label>
+                  <label class="control-label  " for="image-min_disk-form">Minimum Disk (GB)</label>
                   <span class="help-icon" data-toggle="tooltip" data-placement="right" title="Minimal necessary disk space to boot the image. Defaults to 0."><span class="glyphicon glyphicon-question-sign"></span></span>
                   <div class=" ">
-                    <input class="form-control" id="image-min-disk-form" min="0" name="x-image-meta-min-disk" type="number">
+                    <input class="form-control" id="image-min_disk-form" min="0" name="x-image-meta-min-disk" type="number">
                   </div>
                 </div>
                 <div class="form-group ">
-                  <label class="control-label  " for="image-min-ram-form">Minimum RAM (MB)</label>
+                  <label class="control-label  " for="image-min_ram-form">Minimum RAM (MB)</label>
                   <span class="help-icon" data-toggle="tooltip" data-placement="right" title="Minimal necessary RAM size to boot the image. Defaults to 0."><span class="glyphicon glyphicon-question-sign"></span></span>
                   <div class=" ">
-                    <input class="form-control" id="image-min-ram-form" min="0" name="x-image-meta-min-ram" type="number">
+                    <input class="form-control" id="image-min_ram-form" min="0" name="x-image-meta-min-ram" type="number">
                   </div>
                 </div>
                 <div class="form-group ">
@@ -180,14 +180,14 @@
             </div>
 
             <div class="col-xs-6">
-                <div id="image-container-format">
+                <div id="image-container_format">
                     <i class="fa fa-dot-circle-o"></i>
                     <strong>Container format: </strong>
                     <span></span>
                     <!-- Addresses -->
                 </div>
 
-                <div id="image-disk-format">
+                <div id="image-disk_format">
                     <i class="fa fa-file-o"></i>
                     <strong>Disk format: </strong>
                     <span></span>
