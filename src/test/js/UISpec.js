@@ -360,4 +360,12 @@ describe("User Interface", function () {
         expect(callbacks.refresh).toHaveBeenCalled();
         expect('#detail-view').not.toHaveClass('hide');
     });
+
+    it('should call buildDefaultView in UI.init', function () {
+        var buildDefaultViewSpy = spyOn(UI, 'buildDefaultView');
+
+        UI.init();
+
+        expect(buildDefaultViewSpy).toHaveBeenCalled();
+    });
 });

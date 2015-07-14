@@ -179,7 +179,7 @@ var UI = (function () {
         });
 
         // Build default view
-        buildDefaultView();
+        UI.buildDefaultView();
 
     }
 
