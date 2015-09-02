@@ -1,16 +1,16 @@
 {
   "name": "ImageDetails",
-  "homepage": "https://repo.conwet.fi.upm.es/wirecloud/OpenStack-ImageDetails-Widget.git",
+  "homepage": "https://github.com/fidash/widget-imagedetails",
   "version": "0.5.1",
   "vendor": "UPM-ETSIINF",
   "author": "CoNWeT Lab., Universidad Politecnica de Madrid",
   "description": "A prototype widget for an openstack dashboard.",
   "repository": {
     "type": "git",
-    "url": "https://repo.conwet.fi.upm.es/wirecloud/OpenStack-ImageDetails-Widget.git"
+    "url": "https://github.com/fidash/widget-imagedetails"
   },
   "bugs": {
-    "url": "https://repo.conwet.fi.upm.es/wirecloud/OpenStack-ImageDetails-Widget/issues"
+    "url": "https://github.com/fidash/widget-imagedetails/issues"
   },
   "keywords": [
     "wirecloud",
