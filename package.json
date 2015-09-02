@@ -2,7 +2,7 @@
   "name": "ImageDetails",
   "homepage": "https://repo.conwet.fi.upm.es/wirecloud/OpenStack-ImageDetails-Widget.git",
   "version": "0.5.1",
-  "vendor": "CoNWeT",
+  "vendor": "UPM-ETSIINF",
   "author": "CoNWeT Lab., Universidad Politecnica de Madrid",
   "description": "A prototype widget for an openstack dashboard.",
   "repository": {
