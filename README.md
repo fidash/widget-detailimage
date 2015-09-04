@@ -11,4 +11,4 @@ The Image Details widget has the following wiring endpoints:
 
 |Way|Name|Type|Description|Label|Friendcode|
 |:--:|:--:|:--:|:--:|:--:|:--:|
-|image_id|text|Receives image ID and OpenStack service token.|Image ID|image_id|
+|input|image_id|text|Receives image ID and OpenStack service token.|Image ID|image_id|
