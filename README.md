@@ -1,4 +1,4 @@
-#Image Details Widget
+#Detail Image Widget
 
 This project is part of [FIWARE](https://www.fiware.org/). This widget is part of FI-Dash component included in FIWARE.
 
@@ -7,7 +7,7 @@ The widget displays all the attributes of an OpenStack Image available to the us
 
 ## Wiring endpoints
 
-The Image Details widget has the following wiring endpoints:
+The Detail Image widget has the following wiring endpoints:
 
 |Way|Name|Type|Description|Label|Friendcode|
 |:--:|:--:|:--:|:--:|:--:|:--:|
