@@ -27,6 +27,7 @@ var ImageDetails = (function (JSTACK) {
     function drawDetails (autoRefresh, imageData) {
         
         imageData = JSON.parse(imageData);
+        imageData.region = this.region;
 
         // Build view
         UI.buildDetailView(imageData);

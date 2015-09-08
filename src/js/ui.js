@@ -100,6 +100,7 @@ var UI = (function () {
         $('#image-disk_format > span').text(imageData.disk_format);
         $('#image-created > span').text(imageData.created_at);
         $('#image-updated > span').text(imageData.updated_at);
+        $('#image-region > span').text(imageData.region);
 
         // Status
         $('#image-status > div > i').removeClass();
