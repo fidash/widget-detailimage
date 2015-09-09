@@ -133,6 +133,9 @@ var UI = (function () {
     function init (callbacks) {
         
         // Init click events
+        $('#launch-button').click(function () {
+            callbacks.launch();
+        });
         $('#refresh-button').click(function () {
             callbacks.refresh(false);
         });

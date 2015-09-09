@@ -1,7 +1,7 @@
 var Utils = (function () {
-	"use strict";
+    "use strict";
 
-	function getDisplayableSize (size) {
+    function getDisplayableSize (size) {
         
         var unitChangeLimit = 1024;
         var units = [
@@ -32,8 +32,21 @@ var Utils = (function () {
     
     }
 
+    function convertToGB (bytes) {
+
+        var unitChangeLimit = 1024;
+        var result = bytes;
+
+        for (var i=0; i<3; i++) {
+            result = parseFloat(result/unitChangeLimit);
+        }
+
+        return result;
+    }
+
     return {
-    	getDisplayableSize: getDisplayableSize
+        getDisplayableSize: getDisplayableSize,
+        convertToGB: convertToGB
     };
     
 })();
