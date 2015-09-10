@@ -11,14 +11,14 @@ describe("User Interface", function () {
             "expected": "1 B"
         },
         {
-            "unit": "kiB",
+            "unit": "KiB",
             "bytes": 1024,
-            "expected": "1.00 kiB"
+            "expected": "1.00 KiB"
         },
         {
-            "unit": "kiB",
+            "unit": "KiB",
             "bytes": 135821,
-            "expected": "132.64 kiB"
+            "expected": "132.64 KiB"
         },
         {
             "unit": "MiB",
