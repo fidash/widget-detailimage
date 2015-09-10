@@ -7,8 +7,8 @@ The widget displays all the attributes of an OpenStack Image available to the us
 
 ## Wiring endpoints
 
-The Detail Image widget has the following wiring endpoints:
+The Detail Image widget has the following input wiring endpoints:
 
-|Way|Name|Type|Description|Label|Friendcode|
-|:--:|:--:|:--:|:--:|:--:|:--:|
-|input|image_id|text|Receives image ID and OpenStack service token.|Image ID|image_id|
+|Label|Name|Friendcode|Type|Description|
+|:--:|:--:|:--:|:--:|:--:|
+|Image ID|image_id|image_id|text|Receives image ID and OpenStack service token.|
