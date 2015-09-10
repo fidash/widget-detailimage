@@ -6,7 +6,7 @@ var Utils = (function () {
         var unitChangeLimit = 1024;
         var units = [
             "B",
-            "kiB",
+            "KiB",
             "MiB",
             "GiB",
             "TiB",
@@ -15,12 +15,12 @@ var Utils = (function () {
             "ZiB",
             "YiB",
         ];
-        size = parseFloat(size);
-        var displayableSize = size;
+
+        var displayableSize = parseFloat(size);
         var unit = 0;
 
-        if (size < unitChangeLimit) {
-            return size + ' ' + units[0];
+        if (displayableSize < unitChangeLimit) {
+            return displayableSize + ' ' + units[0];
         }
 
         while (parseFloat(displayableSize/unitChangeLimit) >= parseFloat(1) && unit < 9) {
@@ -32,7 +32,7 @@ var Utils = (function () {
     
     }
 
-    function convertToGB (bytes) {
+    function byteToGiB (bytes) {
 
         var unitChangeLimit = 1024;
         var result = bytes;
@@ -46,7 +46,7 @@ var Utils = (function () {
 
     return {
         getDisplayableSize: getDisplayableSize,
-        convertToGB: convertToGB
+        byteToGiB: byteToGiB
     };
     
 })();
