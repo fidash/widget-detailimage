@@ -44,9 +44,15 @@ var Utils = (function () {
         return result;
     }
 
+    function formatDate (dateString) {
+        var date = new Date(dateString);
+        return date.toUTCString();
+    }
+
     return {
         getDisplayableSize: getDisplayableSize,
-        byteToGiB: byteToGiB
+        byteToGiB: byteToGiB,
+        formatDate: formatDate
     };
     
 })();

@@ -87,6 +87,8 @@ var UI = (function () {
         var displayableSize = Utils.getDisplayableSize(imageData.size);
         var statusTooltip = 'Status: ' + imageData.status;
         var isDisabled = imageData.protected ? true : false;
+        var displayableCreated = Utils.formatDate(imageData.created_at);
+        var displayableUpdated = Utils.formatDate(imageData.updated_at);
 
         // Fields
         $('#image-name').text(imageData.name);
@@ -98,8 +100,8 @@ var UI = (function () {
             .attr('title', imageData.checksum);
         $('#image-container_format > span').text(imageData.container_format);
         $('#image-disk_format > span').text(imageData.disk_format);
-        $('#image-created > span').text(imageData.created_at);
-        $('#image-updated > span').text(imageData.updated_at);
+        $('#image-created > span').text(displayableCreated);
+        $('#image-updated > span').text(displayableUpdated);
         $('#image-region > span').text(imageData.region);
 
         // Status

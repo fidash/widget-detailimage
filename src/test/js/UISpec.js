@@ -145,8 +145,8 @@ describe("User Interface", function () {
                 'id': imageData.id,
                 'visibility': 'Public',
                 'checksum': imageData.checksum,
-                'created': imageData.created_at,
-                'updated': imageData.updated_at,
+                'created': (new Date(imageData.created_at)).toUTCString(),
+                'updated': (new Date(imageData.updated_at)).toUTCString(),
                 'size': parseFloat(imageData.size/1024/1024/1024).toFixed(2) + " GiB",
                 'container_format': imageData.container_format,
                 'disk_format': imageData.disk_format
@@ -171,8 +171,8 @@ describe("User Interface", function () {
                 'id': imageData.id,
                 'visibility': 'Private',
                 'checksum': imageData.checksum,
-                'created': imageData.created_at,
-                'updated': imageData.updated_at,
+                'created': (new Date(imageData.created_at)).toUTCString(),
+                'updated': (new Date(imageData.updated_at)).toUTCString(),
                 'size': parseFloat(imageData.size/1024/1024/1024).toFixed(2) + " GiB",
                 'container_format': imageData.container_format,
                 'disk_format': imageData.disk_format
