@@ -125,32 +125,30 @@ var ImageDetails = (function (JSTACK) {
         },
 
         authenticate: function authenticate () {
-            OStackAuth.getTokenAndParams(OStackAuth.CLOUD_URL)
-                .then(function (params) {
-                    var token = params.token;
-                    var response = params.response;
-                    var responseBody = JSON.parse(response.responseText);
-                    // Temporal change to fix catalog name
-                    responseBody.token.serviceCatalog = responseBody.token.catalog;
-                    // Mimic JSTACK.Keystone.authenticate behavior on success
-                    JSTACK.Keystone.params.token = token;
-                    JSTACK.Keystone.params.access = responseBody.token;
-                    JSTACK.Keystone.params.currentstate = 2;
-                    // MORE
-                    if (this.hasReceivedImage()) {
-                        this.getImageDetails(this.firstRefresh);
-                    }
+            JSTACK.Keystone.init("https://cloud.lab.fiware.org");
+            MashupPlatform.wiring.registerCallback("authentication", function(paramsraw) {
+                var params = JSON.parse(paramsraw);
+                var token = params.token;
+                var responseBody = params.body;
 
-                }.bind(this))
-                .catch(function(error) {
-                    authError.call(this, {
-                        error: {
-                            code: error.status,
-                            title: "Error",
-                            message: error.statusText
-                        }
-                    });
-                }.bind(this));
+                if (token === this.token) {
+                    // same token, ignore
+                    return;
+                }
+
+                // Mimic JSTACK.Keystone.authenticate behavior on success
+                JSTACK.Keystone.params.token = token;
+                JSTACK.Keystone.params.access = responseBody.token;
+                JSTACK.Keystone.params.currentstate = 2;
+
+                this.token = token;
+                this.body = responseBody;
+
+                // extra
+                if (hasReceivedImage.call(this)) {
+                    this.getImageDetails(this.firstRefresh);
+                }
+            }.bind(this));
         },
 
         launchInstance: function launchInstance () {
