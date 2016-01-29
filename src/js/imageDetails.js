@@ -143,7 +143,7 @@ var ImageDetails = (function (JSTACK) {
 
                 }.bind(this))
                 .catch(function(error) {
-                    this.authError({
+                    authError.call(this, {
                         error: {
                             code: error.status,
                             title: "Error",
