@@ -1,14 +1,14 @@
-/* global UI MashupPlatform */
+/* global UI,MashupPlatform,OStackAuth */
 
 var ImageDetails = (function (JSTACK) {
     "use strict";
 
     /*****************************************************************
     *                      C O N S T R U C T O R                     *
-    *****************************************************************/  
+    *****************************************************************/
 
     function ImageDetails () {
-        
+
         this.delay = 4000;
         this.error = false;
         this.firstRefresh = true;
@@ -25,7 +25,7 @@ var ImageDetails = (function (JSTACK) {
     }
 
     function drawDetails (autoRefresh, imageData) {
-        
+
         imageData = JSON.parse(imageData);
         imageData.region = this.region;
         this.image = imageData;
@@ -66,10 +66,10 @@ var ImageDetails = (function (JSTACK) {
     function receiveImageId (wiringData) {
         wiringData = JSON.parse(wiringData);
 
-        JSTACK.Keystone.params.access = wiringData.access;
-        JSTACK.Keystone.params.token = wiringData.token;
-        JSTACK.Keystone.params.currentstate = 2;
-        JSTACK.Keystone.params.version = 3;
+        // JSTACK.Keystone.params.access = wiringData.access;
+        // JSTACK.Keystone.params.token = wiringData.token;
+        // JSTACK.Keystone.params.currentstate = 2;
+        // JSTACK.Keystone.params.version = 3;
 
         this.imageId = wiringData.id;
         this.region = wiringData.region;
@@ -96,6 +96,11 @@ var ImageDetails = (function (JSTACK) {
         return networks;
     }
 
+    function authError (error) {
+        error = error.error;
+        onError({message: error.code + " " + error.title, body: error.message, region: "IDM"});
+        this.authenticate();
+    }
 
     /*****************************************************************
     *                           P U B L I C                          *
@@ -119,6 +124,34 @@ var ImageDetails = (function (JSTACK) {
 
         },
 
+        authenticate: function authenticate () {
+            OStackAuth.getTokenAndParams(OStackAuth.CLOUD_URL)
+                .then(function (params) {
+                    var token = params.token;
+                    var response = params.response;
+                    var responseBody = JSON.parse(response.responseText);
+                    // Temporal change to fix catalog name
+                    responseBody.token.serviceCatalog = responseBody.token.catalog;
+                    // Mimic JSTACK.Keystone.authenticate behavior on success
+                    JSTACK.Keystone.params.token = token;
+                    JSTACK.Keystone.params.access = responseBody.token;
+                    JSTACK.Keystone.params.currentstate = 2;
+                    // MORE
+                    this.error = false;
+                    this.getImageDetails(this.firstRefresh);
+                    this.firstRefresh = false;
+                }.bind(this))
+                .catch(function(error) {
+                    authError.call(this, {
+                        error: {
+                            code: error.status,
+                            title: "Error",
+                            message: error.statusText
+                        }
+                    });
+                }.bind(this));
+        },
+
         launchInstance: function launchInstance () {
 
             // Undefined parameters
@@ -132,7 +165,7 @@ var ImageDetails = (function (JSTACK) {
                 metadata = {region: this.image.region};
 
             JSTACK.Nova.getflavorlist(true, function (flavorResponse) {
-                
+
                 var selectedFlavorId = getFittingFlavor(flavorResponse.flavors, this.image);
 
                 JSTACK.Neutron.getnetworkslist(function (networkResponse) {
@@ -174,7 +207,7 @@ var ImageDetails = (function (JSTACK) {
             var onOk = function onOk (response) {
 
                 var imageData, image;
-                
+
                 for (var i=0; i<response.images.length; i++) {
                     image = response.images[i];
 
@@ -202,7 +235,7 @@ var ImageDetails = (function (JSTACK) {
                 onError.call(this,"No image received yet.");
                 return;
             }
-            
+
             //JSTACK.Nova.deleteimage(this.imageId, callback, onError, "Spain2");
             var service = JSTACK.Keystone.getservice(JSTACK.Nova.params.service);
             var url = JSTACK.Comm.getEndpoint(service, this.region, JSTACK.Nova.params.endpointType);
@@ -217,7 +250,7 @@ var ImageDetails = (function (JSTACK) {
                 onSuccess: resetInterface.bind(this),
                 onFailure: onError.bind(this)
             });
-            
+
         },
 
         updateImage: function updateImage () {

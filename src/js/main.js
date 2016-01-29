@@ -5,5 +5,5 @@ window.addEventListener('DOMContentLoaded', function () {
 
     var imageDetails = new ImageDetails();
     imageDetails.init();
-
+    imageDetails.authenticate();
 }, false);
