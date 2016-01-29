@@ -137,12 +137,13 @@ var ImageDetails = (function (JSTACK) {
                     JSTACK.Keystone.params.access = responseBody.token;
                     JSTACK.Keystone.params.currentstate = 2;
                     // MORE
-                    this.error = false;
-                    this.getImageDetails(this.firstRefresh);
-                    this.firstRefresh = false;
+                    if (this.hasReceivedImage()) {
+                        this.getImageDetails(this.firstRefresh);
+                    }
+
                 }.bind(this))
                 .catch(function(error) {
-                    authError.call(this, {
+                    this.authError({
                         error: {
                             code: error.status,
                             title: "Error",
@@ -188,12 +189,12 @@ var ImageDetails = (function (JSTACK) {
                         function () {
                             console.log("Instance launched successfully.");
                         },
-                        onerror,
+                        onError,
                         this.image.region
                     );
 
-                }.bind(this), onerror, this.image.region);
-            }.bind(this), onerror, this.image.region);
+                }.bind(this), onError, this.image.region);
+            }.bind(this), onError, this.image.region);
 
         },
 
