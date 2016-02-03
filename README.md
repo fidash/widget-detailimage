@@ -13,4 +13,5 @@ The Detail Image widget has the following input wiring endpoints:
 
 |Label|Name|Friendcode|Type|Description|
 |:--:|:--:|:--:|:--:|:--|
+|Authentication|authentication|openstack-auth|text|Receive the authentication data via wiring.|
 |Image ID|image_id|image_id|text|Receives image ID and OpenStack service token.|
